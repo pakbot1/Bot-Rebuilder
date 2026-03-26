@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For page transitions and smooth UI animations"
+  "lucide-react": "For beautiful icons"
+  "clsx": "For conditional tailwind class merging"
+  "tailwind-merge": "For conditional tailwind class merging"
+  "date-fns": "For formatting dates in admin and dashboard panels"
+
+images:
+  - path: "artifacts/pak-bot/public/images/hero-bg.png"
+    description: "Abstract elegant gradient mesh background in deep rich pakistani green and dark emerald colors with subtle glowing light leaks, highly polished premium 3d aesthetic"
+    aspect_ratio: "16:9"
+  - path: "artifacts/pak-bot/public/images/pattern.png"
+    description: "Subtle geometric islamic art inspired seamless pattern on transparent background, minimal, clean, very faint opacity"
+    aspect_ratio: "1:1"
+
+notes:
+  - App relies on generated React Query hooks from @workspace/api-client-react
+  - Authentication relies on custom headers (X-API-Key and X-Admin-Key) which are dynamically passed to hooks

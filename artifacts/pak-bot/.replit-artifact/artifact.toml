@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PakBot API"
+version = "1.0.0"
+id = "artifacts/pak-bot"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19671
+
+[services.development]
+run = "pnpm --filter @workspace/pak-bot run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pak-bot", "run", "build" ]
+publicDir = "artifacts/pak-bot/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19671"
+BASE_PATH = "/"

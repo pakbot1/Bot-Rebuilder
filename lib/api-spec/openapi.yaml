@@ -1,22 +1,27 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 1.0.0
+  description: PakBot REST API - Pakistan's First AI Assistant
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: chat
+    description: Chat operations
+  - name: bots
+    description: Bot management
+  - name: admin
+    description: Admin operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
+      description: Health check — no API key required
       responses:
         "200":
           description: Healthy
@@ -24,7 +29,269 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /chat:
+    post:
+      operationId: sendChatMessage
+      tags: [chat]
+      summary: Send a chat message
+      description: Send a message to PakBot and receive an AI reply
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: AI reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bots:
+    get:
+      operationId: listBots
+      tags: [bots]
+      summary: List all registered bots
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: List of bots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bot"
+
+    post:
+      operationId: createBot
+      tags: [bots]
+      summary: Create a new bot
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBotRequest"
+      responses:
+        "201":
+          description: Bot created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bot"
+
+  /bots/{botId}/conversations:
+    get:
+      operationId: listConversations
+      tags: [bots]
+      summary: List conversations for a bot
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: botId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+
+    post:
+      operationId: createConversation
+      tags: [bots]
+      summary: Start a new conversation
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: botId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Conversation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+
+  /bots/{botId}/conversations/{id}/messages:
+    post:
+      operationId: sendMessage
+      tags: [bots]
+      summary: Send a message in a conversation
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: botId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageRequest"
+      responses:
+        "200":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  /bots/{botId}/webhooks:
+    post:
+      operationId: registerWebhook
+      tags: [bots]
+      summary: Register a webhook
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: botId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookRequest"
+      responses:
+        "201":
+          description: Webhook registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Webhook"
+
+  /admin/keys:
+    get:
+      operationId: listApiKeys
+      tags: [admin]
+      summary: Manage developer API keys
+      security:
+        - AdminKeyAuth: []
+      responses:
+        "200":
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKey"
+
+    post:
+      operationId: createApiKey
+      tags: [admin]
+      summary: Create key for new developer
+      security:
+        - AdminKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApiKeyRequest"
+      responses:
+        "201":
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKey"
+
+  /admin/keys/{id}:
+    patch:
+      operationId: updateApiKey
+      tags: [admin]
+      summary: Enable or disable an API key
+      security:
+        - AdminKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateApiKeyRequest"
+      responses:
+        "200":
+          description: API key updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKey"
+
+    delete:
+      operationId: deleteApiKey
+      tags: [admin]
+      summary: Delete an API key
+      security:
+        - AdminKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    AdminKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Admin-Key
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +301,175 @@ components:
       required:
         - status
 
+    ChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        sessionId:
+          type: string
+      required:
+        - message
+
+    ChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+        sessionId:
+          type: string
+      required:
+        - reply
+        - sessionId
+
+    Bot:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - createdAt
+
+    CreateBotRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+        botId:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - botId
+        - createdAt
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - role
+        - content
+        - createdAt
+
+    SendMessageRequest:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    WebhookRequest:
+      type: object
+      properties:
+        url:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
+      required:
+        - url
+
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - url
+        - createdAt
+
+    ApiKey:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        key:
+          type: string
+        isActive:
+          type: boolean
+        requestCount:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - key
+        - isActive
+        - requestCount
+        - createdAt
+
+    CreateApiKeyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+
+    UpdateApiKeyRequest:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+      required:
+        - isActive
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        hint:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
