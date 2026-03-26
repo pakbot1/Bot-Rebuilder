@@ -9,4 +9,8 @@
 export interface ChatRequest {
   message: string;
   sessionId?: string;
+  /** Optional base64-encoded image for vision queries */
+  imageBase64?: string;
+  /** MIME type of the image e.g. image/jpeg */
+  imageMimeType?: string;
 }

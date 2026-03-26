@@ -22,6 +22,14 @@ export const HealthCheckResponse = zod.object({
 export const SendChatMessageBody = zod.object({
   message: zod.string(),
   sessionId: zod.string().optional(),
+  imageBase64: zod
+    .string()
+    .optional()
+    .describe("Optional base64-encoded image for vision queries"),
+  imageMimeType: zod
+    .string()
+    .optional()
+    .describe("MIME type of the image e.g. image\/jpeg"),
 });
 
 export const SendChatMessageResponse = zod.object({
@@ -120,6 +128,26 @@ export const ListApiKeysResponse = zod.array(ListApiKeysResponseItem);
 export const CreateApiKeyBody = zod.object({
   name: zod.string(),
   email: zod.string().optional(),
+});
+
+/**
+ * @summary Get bot system instructions
+ */
+export const GetInstructionsResponse = zod.object({
+  content: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update bot system instructions
+ */
+export const UpdateInstructionsBody = zod.object({
+  content: zod.string(),
+});
+
+export const UpdateInstructionsResponse = zod.object({
+  content: zod.string(),
+  updatedAt: zod.string(),
 });
 
 /**

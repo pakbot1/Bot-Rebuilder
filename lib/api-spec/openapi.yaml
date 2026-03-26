@@ -234,6 +234,41 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiKey"
 
+  /admin/instructions:
+    get:
+      operationId: getInstructions
+      tags: [admin]
+      summary: Get bot system instructions
+      security:
+        - AdminKeyAuth: []
+      responses:
+        "200":
+          description: Current instructions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstructionsResponse"
+
+    put:
+      operationId: updateInstructions
+      tags: [admin]
+      summary: Update bot system instructions
+      security:
+        - AdminKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInstructionsRequest"
+      responses:
+        "200":
+          description: Updated instructions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstructionsResponse"
+
   /admin/keys/{id}:
     patch:
       operationId: updateApiKey
@@ -308,6 +343,12 @@ components:
           type: string
         sessionId:
           type: string
+        imageBase64:
+          type: string
+          description: Optional base64-encoded image for vision queries
+        imageMimeType:
+          type: string
+          description: MIME type of the image e.g. image/jpeg
       required:
         - message
 
@@ -473,3 +514,22 @@ components:
           type: boolean
       required:
         - success
+
+    InstructionsResponse:
+      type: object
+      properties:
+        content:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - content
+        - updatedAt
+
+    UpdateInstructionsRequest:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content

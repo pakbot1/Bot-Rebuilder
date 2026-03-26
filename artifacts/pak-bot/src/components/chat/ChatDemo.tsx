@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, Send, Key, AlertCircle, RefreshCw } from "lucide-react";
+import { Bot, Send, Key, AlertCircle, RefreshCw, Paperclip, X, Image } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useSendChatMessage } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-type Message = { id: string; role: "user" | "assistant"; content: string };
+type Message = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  imageUrl?: string;
+};
 
 export function ChatDemo() {
   const { apiKey, setApiKey } = useAuth();
@@ -16,9 +21,11 @@ export function ChatDemo() {
   const [messages, setMessages] = useState<Message[]>([
     { id: "msg-1", role: "assistant", content: "Assalam o Alaikum! 😊 I am PakBot, Pakistan's first AI assistant. How can I help you today?" }
   ]);
+  const [isPending, setIsPending] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const { mutate: sendMessage, isPending } = useSendChatMessage();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,37 +33,86 @@ export function ChatDemo() {
 
   const handleSaveKey = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputKey.trim()) {
-      setApiKey(inputKey.trim());
-    }
+    if (inputKey.trim()) setApiKey(inputKey.trim());
   };
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || !apiKey || isPending) return;
+    if ((!message.trim() && !imageFile) || !apiKey || isPending) return;
 
-    const userMsg = message.trim();
+    const userMsg = message.trim() || "What's in this image?";
+    const localImagePreview = imagePreview;
     setMessage("");
-    setMessages(prev => [...prev, { id: Date.now().toString(), role: "user", content: userMsg }]);
+    clearImage();
 
-    sendMessage({
-      data: { message: userMsg, sessionId }
-    }, {
-      request: { headers: { "X-API-Key": apiKey } as HeadersInit },
-      onSuccess: (res) => {
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: res.reply }]);
-        if (res.sessionId) setSessionId(res.sessionId);
-      },
-      onError: (err: any) => {
-        const errorText = err?.error || "Failed to send message. Check your API key.";
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: `❌ Error: ${errorText}` }]);
+    const userMsgObj: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: userMsg,
+      imageUrl: localImagePreview ?? undefined
+    };
+    setMessages(prev => [...prev, userMsgObj]);
+    setIsPending(true);
+
+    try {
+      let imageBase64: string | undefined;
+      let imageMimeType: string | undefined;
+
+      if (imageFile) {
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+        let binary = "";
+        for (let i = 0; i < uint8Array.length; i++) binary += String.fromCharCode(uint8Array[i]);
+        imageBase64 = btoa(binary);
+        imageMimeType = imageFile.type;
       }
-    });
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": apiKey,
+        },
+        body: JSON.stringify({
+          message: userMsg,
+          sessionId,
+          ...(imageBase64 ? { imageBase64, imageMimeType } : {})
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: `❌ Error: ${data.error || "Failed to send message."}` }]);
+      } else {
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: data.reply }]);
+        if (data.sessionId) setSessionId(data.sessionId);
+      }
+    } catch {
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: "❌ Could not connect to server." }]);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handleReset = () => {
     setSessionId(Math.random().toString(36).substring(7));
     setMessages([{ id: Date.now().toString(), role: "assistant", content: "Assalam o Alaikum! Starting a new conversation. What's on your mind?" }]);
+    clearImage();
   };
 
   if (!apiKey) {
@@ -70,9 +126,9 @@ export function ChatDemo() {
           Enter your developer API key to test the interactive chat endpoint directly from the browser.
         </p>
         <form onSubmit={handleSaveKey} className="w-full max-w-xs space-y-4">
-          <Input 
+          <Input
             type="password"
-            placeholder="pk_..." 
+            placeholder="pk_..."
             value={inputKey}
             onChange={(e) => setInputKey(e.target.value)}
             className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus-visible:ring-white/20 h-14"
@@ -86,7 +142,7 @@ export function ChatDemo() {
   }
 
   return (
-    <div className="w-full h-[600px] flex flex-col rounded-3xl bg-white border border-border/60 shadow-xl overflow-hidden relative">
+    <div className="w-full h-[620px] flex flex-col rounded-3xl bg-white border border-border/60 shadow-xl overflow-hidden relative">
       {/* Chat Header */}
       <div className="px-6 py-4 border-b border-border/50 bg-gray-50 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -119,18 +175,22 @@ export function ChatDemo() {
               key={msg.id}
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className={cn(
-                "flex w-full",
-                msg.role === "user" ? "justify-end" : "justify-start"
-              )}
+              className={cn("flex w-full", msg.role === "user" ? "justify-end" : "justify-start")}
             >
               <div className={cn(
-                "max-w-[85%] px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm",
-                msg.role === "user" 
-                  ? "bg-primary text-primary-foreground rounded-br-sm" 
+                "max-w-[85%] px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm space-y-2",
+                msg.role === "user"
+                  ? "bg-primary text-primary-foreground rounded-br-sm"
                   : "bg-white border border-border/50 text-foreground rounded-bl-sm"
               )}>
-                {msg.content}
+                {msg.imageUrl && (
+                  <img
+                    src={msg.imageUrl}
+                    alt="attached"
+                    className="rounded-xl max-w-[240px] max-h-[180px] object-cover border border-white/20"
+                  />
+                )}
+                <p>{msg.content}</p>
               </div>
             </motion.div>
           ))}
@@ -157,21 +217,63 @@ export function ChatDemo() {
         <span>PakBot can make mistakes. Double-check replies.</span>
       </div>
 
+      {/* Image Preview */}
+      {imagePreview && (
+        <div className="px-4 py-2 bg-white border-t border-border/30 flex items-center gap-3">
+          <div className="relative">
+            <img src={imagePreview} alt="preview" className="h-14 w-14 rounded-lg object-cover border border-border" />
+            <button
+              onClick={clearImage}
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            <p className="font-medium text-foreground flex items-center gap-1"><Image className="w-3 h-3" /> Image attached</p>
+            <p>{imageFile?.name}</p>
+          </div>
+        </div>
+      )}
+
       {/* Input Area */}
       <form onSubmit={handleSend} className="p-4 bg-white border-t border-border/50">
-        <div className="relative flex items-center">
+        <div className="relative flex items-center gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageSelect}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-muted-foreground hover:text-primary"
+            onClick={() => fileInputRef.current?.click()}
+            title="Attach image"
+          >
+            <Paperclip className="w-5 h-5" />
+          </Button>
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask anything... / کچھ بھی پوچھیں..."
+            placeholder="Ask anything or attach an image..."
             className="pr-14 h-14 bg-gray-50 border-transparent focus-visible:bg-white"
             disabled={isPending}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend(e as any);
+              }
+            }}
           />
-          <Button 
-            type="submit" 
-            size="icon" 
+          <Button
+            type="submit"
+            size="icon"
             className="absolute right-1.5 h-11 w-11 rounded-xl"
-            disabled={!message.trim() || isPending}
+            disabled={(!message.trim() && !imageFile) || isPending}
           >
             <Send className="w-5 h-5 ml-0.5" />
           </Button>

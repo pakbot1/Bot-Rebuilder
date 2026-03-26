@@ -26,10 +26,12 @@ import type {
   CreateBotRequest,
   ErrorResponse,
   HealthStatus,
+  InstructionsResponse,
   Message,
   SendMessageRequest,
   SuccessResponse,
   UpdateApiKeyRequest,
+  UpdateInstructionsRequest,
   Webhook,
   WebhookRequest,
 } from "./api.schemas";
@@ -861,6 +863,168 @@ export const useCreateApiKey = <
   TContext
 > => {
   return useMutation(getCreateApiKeyMutationOptions(options));
+};
+
+/**
+ * @summary Get bot system instructions
+ */
+export const getGetInstructionsUrl = () => {
+  return `/api/admin/instructions`;
+};
+
+export const getInstructions = async (
+  options?: RequestInit,
+): Promise<InstructionsResponse> => {
+  return customFetch<InstructionsResponse>(getGetInstructionsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetInstructionsQueryKey = () => {
+  return [`/api/admin/instructions`] as const;
+};
+
+export const getGetInstructionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getInstructions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getInstructions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetInstructionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getInstructions>>> = ({
+    signal,
+  }) => getInstructions({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getInstructions>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetInstructionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getInstructions>>
+>;
+export type GetInstructionsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get bot system instructions
+ */
+
+export function useGetInstructions<
+  TData = Awaited<ReturnType<typeof getInstructions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getInstructions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetInstructionsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Update bot system instructions
+ */
+export const getUpdateInstructionsUrl = () => {
+  return `/api/admin/instructions`;
+};
+
+export const updateInstructions = async (
+  updateInstructionsRequest: UpdateInstructionsRequest,
+  options?: RequestInit,
+): Promise<InstructionsResponse> => {
+  return customFetch<InstructionsResponse>(getUpdateInstructionsUrl(), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateInstructionsRequest),
+  });
+};
+
+export const getUpdateInstructionsMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInstructions>>,
+    TError,
+    { data: BodyType<UpdateInstructionsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateInstructions>>,
+  TError,
+  { data: BodyType<UpdateInstructionsRequest> },
+  TContext
+> => {
+  const mutationKey = ["updateInstructions"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateInstructions>>,
+    { data: BodyType<UpdateInstructionsRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateInstructions(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateInstructionsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateInstructions>>
+>;
+export type UpdateInstructionsMutationBody =
+  BodyType<UpdateInstructionsRequest>;
+export type UpdateInstructionsMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update bot system instructions
+ */
+export const useUpdateInstructions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateInstructions>>,
+    TError,
+    { data: BodyType<UpdateInstructionsRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateInstructions>>,
+  TError,
+  { data: BodyType<UpdateInstructionsRequest> },
+  TContext
+> => {
+  return useMutation(getUpdateInstructionsMutationOptions(options));
 };
 
 /**

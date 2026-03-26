@@ -12,6 +12,10 @@ export interface HealthStatus {
 export interface ChatRequest {
   message: string;
   sessionId?: string;
+  /** Optional base64-encoded image for vision queries */
+  imageBase64?: string;
+  /** MIME type of the image e.g. image/jpeg */
+  imageMimeType?: string;
 }
 
 export interface ChatResponse {
@@ -84,4 +88,13 @@ export interface ErrorResponse {
 
 export interface SuccessResponse {
   success: boolean;
+}
+
+export interface InstructionsResponse {
+  content: string;
+  updatedAt: string;
+}
+
+export interface UpdateInstructionsRequest {
+  content: string;
 }
