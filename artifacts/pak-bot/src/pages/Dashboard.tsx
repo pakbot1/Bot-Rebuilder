@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Key, Bot as BotIcon, LogOut, Plus, Activity } from "lucide-react";
 import { useListBots, useCreateBot } from "@workspace/api-client-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const { apiKey, setApiKey, logoutDeveloper } = useAuth();

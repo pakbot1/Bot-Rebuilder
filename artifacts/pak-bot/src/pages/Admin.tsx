@@ -9,6 +9,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { Shield, KeyRound, Users, Activity, Trash2, ShieldAlert, LogOut, Check, X } from "lucide-react";
 import { useListApiKeys, useCreateApiKey, useUpdateApiKey, useDeleteApiKey } from "@workspace/api-client-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function Admin() {
   const { adminKey, setAdminKey, logoutAdmin } = useAuth();
