@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { Bot, Terminal, Shield, LayoutDashboard } from "lucide-react";
+import { Terminal, Shield, LayoutDashboard, Home } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export function Navbar() {
@@ -8,7 +8,7 @@ export function Navbar() {
   const { apiKey, adminKey } = useAuth();
 
   const links = [
-    { href: "/", label: "Home", icon: Bot },
+    { href: "/", label: "Home", icon: Home },
     { href: "/docs", label: "Endpoints", icon: Terminal },
     { href: "/dashboard", label: "Developer", icon: LayoutDashboard, highlight: !!apiKey },
     { href: "/admin", label: "Admin", icon: Shield, highlight: !!adminKey },
@@ -18,8 +18,8 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-40 px-4 py-4 pointer-events-none">
       <div className="max-w-5xl mx-auto glass-panel rounded-2xl px-6 py-3 flex items-center justify-between pointer-events-auto">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-            <Bot className="text-white w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="PakBot" className="w-full h-full object-cover" />
           </div>
           <span className="font-display font-bold text-xl tracking-tight text-foreground">
             PakBot API

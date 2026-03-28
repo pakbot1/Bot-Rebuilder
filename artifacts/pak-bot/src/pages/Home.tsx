@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { ChatDemo } from "@/components/chat/ChatDemo";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { Bot, Terminal, ChevronRight, Zap, ShieldCheck } from "lucide-react";
+import { Bot, Terminal, ChevronRight, Zap, ShieldCheck, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -50,7 +50,7 @@ console.log(data.reply);`;
                   Llama 3.3 70B Powered
                 </div>
                 <h1 className="text-5xl lg:text-7xl font-display font-extrabold text-foreground leading-[1.1] tracking-tight mb-6">
-                  Pakistan's First <br/>
+                  Pakistan's <br/>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">AI Assistant API</span>
                 </h1>
                 <p className="text-lg lg:text-xl text-muted-foreground mb-8 leading-relaxed">
@@ -89,14 +89,10 @@ console.log(data.reply);`;
                 <p className="text-muted-foreground leading-relaxed">Powered by Groq's high-speed inference engine for ultra-low latency responses.</p>
               </div>
 
-              {/* 19 Languages card with logo */}
+              {/* 19 Languages card */}
               <div className="p-8 rounded-3xl border border-border/50 bg-background hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 overflow-hidden">
-                  <img
-                    src={`${import.meta.env.BASE_URL}logo.png`}
-                    alt="PakBot"
-                    className="w-10 h-10 object-contain"
-                  />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 text-primary">
+                  <Globe className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold mb-1">19 Local Languages</h3>
                 <p className="text-muted-foreground leading-relaxed mb-3">Fluent in both languages, understanding cultural nuances seamlessly.</p>
@@ -220,7 +216,7 @@ console.log(data.reply);`;
       </main>
       
       <footer className="bg-foreground text-white/50 py-12 text-center text-sm border-t border-white/10">
-        <p>© {new Date().getFullYear()} PakBot API. Pakistan's First AI Assistant.</p>
+        <p>© {new Date().getFullYear()} PakBot API. Pakistan's AI Assistant.</p>
         <p className="mt-2">
           A product of{" "}
           <a
