@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { ChatDemo } from "@/components/chat/ChatDemo";
 import { Button } from "@/components/ui/button";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { Bot, Terminal, ChevronRight, Zap, Globe, ShieldCheck } from "lucide-react";
+import { Bot, Terminal, ChevronRight, Zap, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -81,19 +81,39 @@ console.log(data.reply);`;
           <div className="absolute inset-0 opacity-5" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}images/pattern.png)` }}></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { icon: Zap, title: "Lightning Fast", desc: "Powered by Groq's high-speed inference engine for ultra-low latency responses." },
-                { icon: Globe, title: "Urdu & English", desc: "Fluent in both languages, understanding cultural nuances seamlessly." },
-                { icon: ShieldCheck, title: "Enterprise Ready", desc: "Secure API key management, webhook support, and rate limiting built-in." },
-              ].map((f, i) => (
-                <div key={i} className="p-8 rounded-3xl border border-border/50 bg-background hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 text-primary">
-                    <f.icon className="w-7 h-7" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{f.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{f.desc}</p>
+              <div className="p-8 rounded-3xl border border-border/50 bg-background hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 text-primary">
+                  <Zap className="w-7 h-7" />
                 </div>
-              ))}
+                <h3 className="text-xl font-bold mb-3">Lightning Fast</h3>
+                <p className="text-muted-foreground leading-relaxed">Powered by Groq's high-speed inference engine for ultra-low latency responses.</p>
+              </div>
+
+              {/* 19 Languages card with logo */}
+              <div className="p-8 rounded-3xl border border-border/50 bg-background hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 overflow-hidden">
+                  <img
+                    src={`${import.meta.env.BASE_URL}logo.png`}
+                    alt="PakBot"
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+                <h3 className="text-xl font-bold mb-1">19 Local Languages</h3>
+                <p className="text-muted-foreground leading-relaxed mb-3">Fluent in both languages, understanding cultural nuances seamlessly.</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Urdu","English","Punjabi","Sindhi","Pashto","Balochi","Saraiki","Kashmiri","Gujarati","Shina","Hindko","Brahui","Wakhi","Kalasha","Burushaski","Gujjari","Torwali","Kundal","Kohistan"].map(lang => (
+                    <span key={lang} className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">{lang}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-8 rounded-3xl border border-border/50 bg-background hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center mb-6 text-primary">
+                  <ShieldCheck className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-bold mb-3">Enterprise Ready</h3>
+                <p className="text-muted-foreground leading-relaxed">Secure API key management, webhook support, and rate limiting built-in.</p>
+              </div>
             </div>
           </div>
         </section>
@@ -146,7 +166,8 @@ console.log(data.reply);`;
             
             <div className="space-y-4">
               {[
-                { method: "POST", path: "/api/chat", desc: "Send a message and receive an AI reply" },
+                { method: "POST", path: "/api/chat", desc: "Send a message and receive an AI reply. Supports optional image (base64) and url fields." },
+                { method: "POST", path: "/api/chat/stream", desc: "Same as /chat but streams the reply token-by-token via Server-Sent Events." },
                 { method: "GET", path: "/api/bots", desc: "List all registered developer bots" },
                 { method: "POST", path: "/api/bots", desc: "Create a new custom bot profile" },
                 { method: "GET", path: "/api/bots/:id/conversations", desc: "List conversations for a bot" },
@@ -200,6 +221,17 @@ console.log(data.reply);`;
       
       <footer className="bg-foreground text-white/50 py-12 text-center text-sm border-t border-white/10">
         <p>© {new Date().getFullYear()} PakBot API. Pakistan's First AI Assistant.</p>
+        <p className="mt-2">
+          A product of{" "}
+          <a
+            href="https://faiwebz.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 hover:text-white underline underline-offset-2 transition-colors"
+          >
+            Faiwebz
+          </a>
+        </p>
       </footer>
     </div>
   );

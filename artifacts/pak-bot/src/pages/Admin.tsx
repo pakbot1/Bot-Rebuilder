@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog } from "@/components/ui/dialog";
-import { Shield, KeyRound, Users, Activity, Trash2, ShieldAlert, LogOut, Check, X, BookOpen, Save, RotateCcw } from "lucide-react";
+import { Shield, KeyRound, Users, Activity, Trash2, ShieldAlert, LogOut, Check, X, BookOpen, Save, RotateCcw, Copy } from "lucide-react";
 import { useListApiKeys, useCreateApiKey, useUpdateApiKey, useDeleteApiKey, useGetInstructions, useUpdateInstructions } from "@workspace/api-client-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,16 @@ export default function Admin() {
   // Instructions state
   const [editedInstructions, setEditedInstructions] = useState<string | null>(null);
   const [savedMsg, setSavedMsg] = useState(false);
+
+  // Copy state: tracks which key id was just copied
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopyKey = (key: string, id: string) => {
+    navigator.clipboard.writeText(key).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
 
   const reqOptions = { request: { headers: { "X-Admin-Key": adminKey } as HeadersInit } };
 
@@ -244,9 +254,25 @@ export default function Admin() {
                         <div className="text-muted-foreground text-xs mt-0.5">{key.email || "No email"}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <code className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-mono border border-slate-200">
-                          {key.key.substring(0, 8)}...{key.key.substring(key.key.length - 4)}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-mono border border-slate-200">
+                            {key.key.substring(0, 8)}...{key.key.substring(key.key.length - 4)}
+                          </code>
+                          <button
+                            onClick={() => handleCopyKey(key.key, key.id)}
+                            title="Copy full API key"
+                            className={cn(
+                              "p-1 rounded transition-colors",
+                              copiedId === key.id
+                                ? "text-emerald-600 bg-emerald-50"
+                                : "text-muted-foreground hover:text-foreground hover:bg-slate-100"
+                            )}
+                          >
+                            {copiedId === key.id
+                              ? <Check className="w-3.5 h-3.5" />
+                              : <Copy className="w-3.5 h-3.5" />}
+                          </button>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         {key.isActive ? (

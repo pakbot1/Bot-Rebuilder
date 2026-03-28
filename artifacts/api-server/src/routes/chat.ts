@@ -21,25 +21,95 @@ You are proud to represent Pakistan and can discuss Pakistani culture, history, 
 Keep responses concise but informative. Always match the user's language exactly.`;
 }
 
-router.post("/chat", async (req, res) => {
-  const apiKey = req.headers["x-api-key"] as string | undefined;
+// Fetch and extract text from a URL
+async function fetchUrlContent(url: string): Promise<string> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { "User-Agent": "PakBot-URLReader/1.0" },
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return `Could not fetch URL (status ${res.status}).`;
+    const html = await res.text();
+    // Strip HTML tags and collapse whitespace
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 8000); // limit content length
+    return text || "No readable content found at this URL.";
+  } catch (err: any) {
+    clearTimeout(timeout);
+    if (err?.name === "AbortError") return "Request timed out while fetching the URL.";
+    return `Could not fetch URL: ${err?.message ?? "Unknown error"}`;
+  }
+}
 
+// Helper: authenticate and validate API key
+async function authenticateKey(req: any, res: any): Promise<(typeof apiKeysTable.$inferSelect) | null> {
+  const apiKey = req.headers["x-api-key"] as string | undefined;
   if (!apiKey) {
     res.status(401).json({ error: "API key required.", hint: "Pass your key as the X-API-Key header: X-API-Key: pk_..." });
-    return;
+    return null;
   }
-
   const keyRecord = await db.select().from(apiKeysTable).where(eq(apiKeysTable.key, apiKey)).limit(1);
-
   if (keyRecord.length === 0) {
     res.status(401).json({ error: "Invalid API key." });
-    return;
+    return null;
   }
-
   if (!keyRecord[0].isActive) {
     res.status(401).json({ error: "API key is disabled." });
-    return;
+    return null;
   }
+  return keyRecord[0];
+}
+
+// Helper: build OpenAI message content from body
+async function buildMessages(body: any, systemPrompt: string, history: Array<{ role: "user" | "assistant"; content: string }>) {
+  const { message, imageBase64, imageMimeType, url } = body;
+
+  let urlContext = "";
+  if (url) {
+    const content = await fetchUrlContent(url);
+    urlContext = `\n\n[URL Content from ${url}]:\n${content}\n[End of URL Content]`;
+  }
+
+  const userText = message + urlContext;
+
+  // Use vision-capable model when image is present
+  const model = imageBase64 ? "gpt-4o" : "gpt-5-mini";
+
+  let userContent: any;
+  if (imageBase64) {
+    const mimeType = imageMimeType ?? "image/jpeg";
+    userContent = [
+      { type: "text", text: userText },
+      {
+        type: "image_url",
+        image_url: { url: `data:${mimeType};base64,${imageBase64}` },
+      },
+    ];
+  } else {
+    userContent = userText;
+  }
+
+  const messages = [
+    { role: "system" as const, content: systemPrompt },
+    ...history.map(h => ({ role: h.role as "user" | "assistant", content: h.content })),
+    { role: "user" as const, content: userContent },
+  ];
+
+  return { messages, model };
+}
+
+// POST /chat — standard JSON response
+router.post("/chat", async (req, res) => {
+  const keyRecord = await authenticateKey(req, res);
+  if (!keyRecord) return;
 
   const body = SendChatMessageBody.safeParse(req.body);
   if (!body.success) {
@@ -47,57 +117,75 @@ router.post("/chat", async (req, res) => {
     return;
   }
 
-  const { message, sessionId = `session_${Date.now()}`, imageBase64, imageMimeType } = body.data;
+  const { message, sessionId = `session_${Date.now()}`, url } = body.data;
 
-  if (!sessions.has(sessionId)) {
-    sessions.set(sessionId, []);
-  }
-
+  if (!sessions.has(sessionId)) sessions.set(sessionId, []);
   const history = sessions.get(sessionId)!;
   const systemPrompt = await getSystemPrompt();
 
-  // Build the user message content (text or text+image)
-  let userContent: any;
-  if (imageBase64) {
-    const mimeType = imageMimeType ?? "image/jpeg";
-    userContent = [
-      { type: "text", text: message },
-      {
-        type: "image_url",
-        image_url: {
-          url: `data:${mimeType};base64,${imageBase64}`,
-        },
-      },
-    ];
-  } else {
-    userContent = message;
+  const { messages, model } = await buildMessages(body.data, systemPrompt, history);
+
+  // Graceful URL error
+  if (url && messages[messages.length - 1]?.content?.toString().includes("Could not fetch URL")) {
+    const errText = messages[messages.length - 1].content as string;
+    if (errText.startsWith("Could not fetch URL") || errText.startsWith("Request timed out") || errText.startsWith("No readable")) {
+      res.status(422).json({ error: errText });
+      return;
+    }
   }
 
-  // Use vision-capable model when image is present
-  const model = imageBase64 ? "gpt-4o" : "gpt-5-mini";
-
-  const completion = await openai.chat.completions.create({
-    model,
-    messages: [
-      { role: "system", content: systemPrompt },
-      ...history.map(h => ({ role: h.role, content: h.content })),
-      { role: "user", content: userContent },
-    ],
-  });
+  const completion = await openai.chat.completions.create({ model, messages });
 
   const reply = completion.choices[0]?.message?.content ?? "Kuch masla ho gaya, dobara try karo.";
 
-  // Store text-only in history for continuity
   history.push({ role: "user", content: message });
   history.push({ role: "assistant", content: reply });
 
-  await db
-    .update(apiKeysTable)
-    .set({ requestCount: (keyRecord[0].requestCount ?? 0) + 1 })
-    .where(eq(apiKeysTable.key, apiKey));
+  await db.update(apiKeysTable).set({ requestCount: (keyRecord.requestCount ?? 0) + 1 }).where(eq(apiKeysTable.key, keyRecord.key));
 
-  const response = SendChatMessageResponse.parse({ reply, sessionId });
-  res.json(response);
+  res.json(SendChatMessageResponse.parse({ reply, sessionId }));
+});
+
+// POST /chat/stream — Server-Sent Events streaming response
+router.post("/chat/stream", async (req, res) => {
+  const keyRecord = await authenticateKey(req, res);
+  if (!keyRecord) return;
+
+  const body = SendChatMessageBody.safeParse(req.body);
+  if (!body.success) {
+    res.status(400).json({ error: "Invalid request body." });
+    return;
+  }
+
+  const { message, sessionId = `session_${Date.now()}` } = body.data;
+
+  if (!sessions.has(sessionId)) sessions.set(sessionId, []);
+  const history = sessions.get(sessionId)!;
+  const systemPrompt = await getSystemPrompt();
+
+  const { messages, model } = await buildMessages(body.data, systemPrompt, history);
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  const completion = await openai.chat.completions.create({ model, messages, stream: true });
+
+  let fullReply = "";
+  for await (const chunk of completion) {
+    const text = chunk.choices[0]?.delta?.content ?? "";
+    if (text) {
+      fullReply += text;
+      res.write(text);
+    }
+  }
+  res.end();
+
+  history.push({ role: "user", content: message });
+  history.push({ role: "assistant", content: fullReply });
+
+  await db.update(apiKeysTable).set({ requestCount: (keyRecord.requestCount ?? 0) + 1 }).where(eq(apiKeysTable.key, keyRecord.key));
 });
 
 export default router;
