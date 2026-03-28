@@ -6,6 +6,13 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// CORS — allow all origins, before all routes
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "X-API-Key", "X-Admin-Key"],
+}));
+
 app.use(
   pinoHttp({
     logger,
@@ -25,7 +32,6 @@ app.use(
     },
   }),
 );
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
