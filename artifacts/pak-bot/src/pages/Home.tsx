@@ -47,7 +47,7 @@ console.log(data.reply);`;
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  Llama 3.3 70B Powered
+                  PakBot
                 </div>
                 <h1 className="text-5xl lg:text-7xl font-display font-extrabold text-foreground leading-[1.1] tracking-tight mb-6">
                   Pakistan's <br/>
