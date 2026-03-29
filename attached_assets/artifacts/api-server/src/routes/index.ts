@@ -10,5 +10,7 @@ router.use(healthRouter);
 router.use(chatRouter);
 router.use(botsRouter);
 router.use(adminRouter);
+router.get("/", (_req, res) => { res.json({ status: "ok", message: "PakBot API is running!" }); });
+
 
 export default router;
