@@ -1,18 +1,30 @@
 import { Router, type IRouter } from "express";
 import { db, apiKeysTable, instructionsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
-import { openai } from "@workspace/integrations-openai-ai-server";
-import { SendChatMessageBody, SendChatMessageResponse } from "@workspace/api-zod";
+import Groq from "groq-sdk";
+import {
+  SendChatMessageBody,
+  SendChatMessageResponse,
+} from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-const sessions = new Map<string, Array<{ role: "user" | "assistant"; content: string }>>();
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+const sessions = new Map<
+  string,
+  Array<{ role: "user" | "assistant"; content: string }>
+>();
 
 const INSTRUCTIONS_ID = "singleton";
 
 async function getSystemPrompt(): Promise<string> {
   try {
-    const row = await db.select().from(instructionsTable).where(eq(instructionsTable.id, INSTRUCTIONS_ID)).limit(1);
+    const row = await db
+      .select()
+      .from(instructionsTable)
+      .where(eq(instructionsTable.id, INSTRUCTIONS_ID))
+      .limit(1);
     if (row.length > 0) return row[0].content;
   } catch {}
   return `You are PakBot, Pakistan's first AI assistant. You are friendly, helpful, and knowledgeable.
@@ -44,19 +56,32 @@ async function fetchUrlContent(url: string): Promise<string> {
     return text || "No readable content found at this URL.";
   } catch (err: any) {
     clearTimeout(timeout);
-    if (err?.name === "AbortError") return "Request timed out while fetching the URL.";
+    if (err?.name === "AbortError")
+      return "Request timed out while fetching the URL.";
     return `Could not fetch URL: ${err?.message ?? "Unknown error"}`;
   }
 }
 
 // Helper: authenticate and validate API key
-async function authenticateKey(req: any, res: any): Promise<(typeof apiKeysTable.$inferSelect) | null> {
+async function authenticateKey(
+  req: any,
+  res: any,
+): Promise<typeof apiKeysTable.$inferSelect | null> {
   const apiKey = req.headers["x-api-key"] as string | undefined;
   if (!apiKey) {
-    res.status(401).json({ error: "API key required.", hint: "Pass your key as the X-API-Key header: X-API-Key: pk_..." });
+    res
+      .status(401)
+      .json({
+        error: "API key required.",
+        hint: "Pass your key as the X-API-Key header: X-API-Key: pk_...",
+      });
     return null;
   }
-  const keyRecord = await db.select().from(apiKeysTable).where(eq(apiKeysTable.key, apiKey)).limit(1);
+  const keyRecord = await db
+    .select()
+    .from(apiKeysTable)
+    .where(eq(apiKeysTable.key, apiKey))
+    .limit(1);
   if (keyRecord.length === 0) {
     res.status(401).json({ error: "Invalid API key." });
     return null;
@@ -69,7 +94,11 @@ async function authenticateKey(req: any, res: any): Promise<(typeof apiKeysTable
 }
 
 // Helper: build OpenAI message content from body
-async function buildMessages(body: any, systemPrompt: string, history: Array<{ role: "user" | "assistant"; content: string }>) {
+async function buildMessages(
+  body: any,
+  systemPrompt: string,
+  history: Array<{ role: "user" | "assistant"; content: string }>,
+) {
   const { message, imageBase64, imageMimeType, url } = body;
 
   let urlContext = "";
@@ -81,7 +110,7 @@ async function buildMessages(body: any, systemPrompt: string, history: Array<{ r
   const userText = message + urlContext;
 
   // Use vision-capable model when image is present
-  const model = imageBase64 ? "gpt-4o" : "gpt-5-mini";
+  const model = "llama-3.3-70b-versatile";
 
   let userContent: any;
   if (imageBase64) {
@@ -99,7 +128,10 @@ async function buildMessages(body: any, systemPrompt: string, history: Array<{ r
 
   const messages = [
     { role: "system" as const, content: systemPrompt },
-    ...history.map(h => ({ role: h.role as "user" | "assistant", content: h.content })),
+    ...history.map((h) => ({
+      role: h.role as "user" | "assistant",
+      content: h.content,
+    })),
     { role: "user" as const, content: userContent },
   ];
 
@@ -123,25 +155,43 @@ router.post("/chat", async (req, res) => {
   const history = sessions.get(sessionId)!;
   const systemPrompt = await getSystemPrompt();
 
-  const { messages, model } = await buildMessages(body.data, systemPrompt, history);
+  const { messages, model } = await buildMessages(
+    body.data,
+    systemPrompt,
+    history,
+  );
 
   // Graceful URL error
-  if (url && messages[messages.length - 1]?.content?.toString().includes("Could not fetch URL")) {
+  if (
+    url &&
+    messages[messages.length - 1]?.content
+      ?.toString()
+      .includes("Could not fetch URL")
+  ) {
     const errText = messages[messages.length - 1].content as string;
-    if (errText.startsWith("Could not fetch URL") || errText.startsWith("Request timed out") || errText.startsWith("No readable")) {
+    if (
+      errText.startsWith("Could not fetch URL") ||
+      errText.startsWith("Request timed out") ||
+      errText.startsWith("No readable")
+    ) {
       res.status(422).json({ error: errText });
       return;
     }
   }
 
-  const completion = await openai.chat.completions.create({ model, messages });
+  const completion = await groq.chat.completions.create({ model, messages });
 
-  const reply = completion.choices[0]?.message?.content ?? "Kuch masla ho gaya, dobara try karo.";
+  const reply =
+    completion.choices[0]?.message?.content ??
+    "Kuch masla ho gaya, dobara try karo.";
 
   history.push({ role: "user", content: message });
   history.push({ role: "assistant", content: reply });
 
-  await db.update(apiKeysTable).set({ requestCount: (keyRecord.requestCount ?? 0) + 1 }).where(eq(apiKeysTable.key, keyRecord.key));
+  await db
+    .update(apiKeysTable)
+    .set({ requestCount: (keyRecord.requestCount ?? 0) + 1 })
+    .where(eq(apiKeysTable.key, keyRecord.key));
 
   res.json(SendChatMessageResponse.parse({ reply, sessionId }));
 });
@@ -163,14 +213,22 @@ router.post("/chat/stream", async (req, res) => {
   const history = sessions.get(sessionId)!;
   const systemPrompt = await getSystemPrompt();
 
-  const { messages, model } = await buildMessages(body.data, systemPrompt, history);
+  const { messages, model } = await buildMessages(
+    body.data,
+    systemPrompt,
+    history,
+  );
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  const completion = await openai.chat.completions.create({ model, messages, stream: true });
+  const completion = await groq.chat.completions.create({
+    model,
+    messages,
+    stream: true,
+  });
 
   let fullReply = "";
   for await (const chunk of completion) {
@@ -185,7 +243,10 @@ router.post("/chat/stream", async (req, res) => {
   history.push({ role: "user", content: message });
   history.push({ role: "assistant", content: fullReply });
 
-  await db.update(apiKeysTable).set({ requestCount: (keyRecord.requestCount ?? 0) + 1 }).where(eq(apiKeysTable.key, keyRecord.key));
+  await db
+    .update(apiKeysTable)
+    .set({ requestCount: (keyRecord.requestCount ?? 0) + 1 })
+    .where(eq(apiKeysTable.key, keyRecord.key));
 });
 
 export default router;
