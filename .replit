@@ -29,3 +29,6 @@ timeoutMs = 20000
 
 [userenv.shared]
 ADMIN_KEY = "pakbot-admin-2024"
+
+[nix]
+packages = ["nano"]
