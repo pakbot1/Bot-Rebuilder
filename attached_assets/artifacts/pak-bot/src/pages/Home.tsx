@@ -45,7 +45,7 @@ export default function Home() {
             
             <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
               Powerful AI capabilities for Pakistani developers and businesses. 
-              <span className="font-semibold">Build intelligent applications</span> with our comprehensive REST API.
+              <span className="font-semibold"> Build intelligent applications</span> with our comprehensive REST API.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
