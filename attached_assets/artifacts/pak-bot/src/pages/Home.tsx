@@ -121,6 +121,75 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Integrate in Minutes Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Integrate in minutes</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our simple REST API makes it trivial to add PakBot to your web, mobile, or backend applications. Just pass your API key and a message.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-emerald-600 font-bold text-lg">1</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Get your API Key</h3>
+              <p className="text-gray-600">Contact sales to provision your enterprise key.</p>
+            </div>
+            
+            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-emerald-600 font-bold text-lg">2</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Make a Request</h3>
+              <p className="text-gray-600">Send a POST request with your message context.</p>
+            </div>
+            
+            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+              <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-emerald-600 font-bold text-lg">3</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Get Response</h3>
+              <p className="text-gray-600">Receive AI-powered responses instantly.</p>
+            </div>
+          </div>
+          
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className="bg-gray-900 rounded-2xl p-6 text-left">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-emerald-400 text-sm font-mono">javascript</span>
+                <button className="text-gray-400 hover:text-white transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8v8z" />
+                  </svg>
+                </button>
+              </div>
+              <pre className="text-emerald-300 text-sm overflow-x-auto">
+                <code>{`import fetch from 'node-fetch';
+
+const response = await fetch('https://pakbot.api/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'pk_your_api_key_here'
+  },
+  body: JSON.stringify({ 
+    message: 'Pakistan ki history kya hai?',
+    sessionId: 'user-123'
+  })
+});
+
+const data = await response.json();
+console.log(data.reply);`}</code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact CTA Section */}
       <section className="text-center py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
