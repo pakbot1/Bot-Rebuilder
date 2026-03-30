@@ -244,7 +244,7 @@ console.log(data.reply);`}</code>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-8 text-center text-sm border-t border-gray-800">
-        <p>© 2006 PakBot API, Pakistan's AI Assistant. A product of Pakweb.</p>
+        <p>© 2026 PakBot API, Pakistan's AI Assistant. A product of Faiwebz.</p>
       </footer>
     </div>
   );
