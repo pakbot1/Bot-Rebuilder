@@ -27,8 +27,8 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 overflow-hidden bg-gradient-to-br from-emerald-50/20 via-transparent to-emerald-100/10">
-        {/* Neon Green Soft Light Effect */}
-        <div className="absolute inset-0 bg-emerald-400/5 blur-3xl">
+        {/* Neon Green Soft Light Effect - Desktop Only */}
+        <div className="hidden lg:block absolute inset-0 bg-emerald-400/5 blur-3xl">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/10 to-emerald-200/5 animate-pulse"></div>
         </div>
         
