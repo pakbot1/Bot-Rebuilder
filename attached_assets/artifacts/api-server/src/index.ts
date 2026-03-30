@@ -1,5 +1,11 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import * as path from "path";
+import { fileURLToPath } from "url";
+import express from "express";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const rawPort = process.env["PORT"];
 
@@ -14,6 +20,14 @@ const port = Number(rawPort);
 if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../../pak-bot/dist')));
+
+// Catch-all route for React SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../pak-bot/dist/index.html'));
+});
 
 app.listen(port, (err) => {
   if (err) {
