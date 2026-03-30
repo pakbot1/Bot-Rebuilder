@@ -31,9 +31,11 @@ export default function Home() {
           <div className="text-center">
             <div className="flex flex-col items-center mb-8">
               <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
-                <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">P</span>
-                </div>
+                <img 
+                  src="/logo.png" 
+                  alt="PakBot API Logo" 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h1 className="text-5xl lg:text-6xl font-black tracking-tight mb-6">
                 PakBot API
