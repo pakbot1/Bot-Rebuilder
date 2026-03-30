@@ -75,7 +75,14 @@ console.log(data.reply);`;
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white px-12 py-4 text-lg">
+              <Button 
+                size="lg" 
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-12 py-4 text-lg"
+                onClick={() => {
+                  const element = document.getElementById('contact-cta');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 Get Started
               </Button>
               <Button variant="outline" size="lg" className="px-12 py-4 text-lg">
@@ -250,7 +257,7 @@ console.log(data.reply);`}</code>
       </section>
 
       {/* Contact CTA Section */}
-      <section className="text-center py-16 bg-gray-50">
+      <section id="contact-cta" className="text-center py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-emerald-600 mb-6 text-center">Ready to integrate PakBot?</h2>
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
