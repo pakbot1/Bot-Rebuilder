@@ -35,7 +35,8 @@ export default function Home() {
               </Button>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
