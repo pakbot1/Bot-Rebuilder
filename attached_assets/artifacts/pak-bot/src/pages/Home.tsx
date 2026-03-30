@@ -29,8 +29,8 @@ export default function Home() {
       <section className="relative pt-20 pb-16 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex justify-center items-center mb-8">
-              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20">
+            <div className="flex flex-col items-center mb-8">
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
                 <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
                   <span className="text-white font-bold text-2xl">P</span>
                 </div>
