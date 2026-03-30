@@ -26,13 +26,8 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 overflow-hidden bg-gradient-to-br from-emerald-50/20 via-transparent to-emerald-100/10">
-        {/* Neon Green Soft Light Effect - Desktop Only */}
-        <div className="hidden lg:block absolute inset-0 bg-emerald-400/5 blur-3xl">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/10 to-emerald-200/5 animate-pulse"></div>
-        </div>
-        
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-20 pb-16 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex flex-col items-center mb-8">
               <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
