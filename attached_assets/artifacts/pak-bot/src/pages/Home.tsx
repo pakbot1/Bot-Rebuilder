@@ -215,21 +215,7 @@ console.log(data.reply);`}</code>
       {/* Contact CTA Section */}
       <section className="text-center py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="w-20 h-20 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-            <img 
-              src="/logo.png" 
-              alt="PakBot API Logo" 
-              className="w-10 h-10 object-contain"
-            />
-          </div>
-          <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
-            <img 
-              src="/logo.png" 
-              alt="PakBot API Logo" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">Ready to integrate PakBot?</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-6 text-center">Ready to integrate PakBot?</h2>
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
             Want to integrate PakBot into your product? Email us to get your API key, discuss pricing, and get onboarded to the platform.
           </p>
