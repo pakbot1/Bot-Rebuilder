@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog } from "@/components/ui/dialog";
-import { Shield, KeyRound, Users, Activity, Trash2, ShieldAlert, LogOut, Check, X, BookOpen, Save, RotateCcw, Copy } from "lucide-react";
+import { Shield, Users, Zap, Settings } from "lucide-react";
 import { useListApiKeys, useCreateApiKey, useUpdateApiKey, useDeleteApiKey, useGetInstructions, useUpdateInstructions } from "@workspace/api-client-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -149,7 +149,7 @@ export default function Admin() {
   const totalRequests = keys?.reduce((sum, k) => sum + k.requestCount, 0) || 0;
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
