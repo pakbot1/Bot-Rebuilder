@@ -216,7 +216,11 @@ console.log(data.reply);`}</code>
       <section className="text-center py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <div className="w-20 h-20 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-            <Bot className="w-10 h-10 text-emerald-600" />
+            <img 
+              src="/logo.png" 
+              alt="PakBot API Logo" 
+              className="w-10 h-10 object-contain"
+            />
           </div>
           <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
             <img 
