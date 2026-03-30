@@ -1,8 +1,34 @@
 import { Button } from "@/components/ui/button";
-import { Bot, Code, Zap, Shield, Globe, Users } from "lucide-react";
+import { Bot, Code, Zap, Shield, Globe, Users, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export default function Home() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = () => {
+    const codeToCopy = `import fetch from 'node-fetch';
+
+const response = await fetch('https://pakbot.api/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'pk_your_api_key_here'
+  },
+  body: JSON.stringify({ 
+    message: 'Pakistan ki history kya hai?',
+    sessionId: 'user-123'
+  })
+});
+
+const data = await response.json();
+console.log(data.reply);`;
+    
+    navigator.clipboard.writeText(codeToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation Menu */}
@@ -183,10 +209,21 @@ export default function Home() {
             <div className="bg-gray-900 rounded-2xl p-6 text-left">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-emerald-400 text-sm font-mono">javascript</span>
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8v8z" />
-                  </svg>
+                <button 
+                  onClick={handleCopyCode}
+                  className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-800"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span className="text-xs">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span className="text-xs">Copy</span>
+                    </>
+                  )}
                 </button>
               </div>
               <pre className="text-emerald-300 text-sm overflow-x-auto">
