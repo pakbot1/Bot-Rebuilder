@@ -73,32 +73,32 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-8 bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50">
+              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
                 <Zap className="w-6 h-6 text-emerald-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Lightning Fast</h3>
               <p className="text-gray-600">Optimized for speed with sub-second response times</p>
             </div>
             
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-8 bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-blue-50">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
                 <Shield className="w-6 h-6 text-blue-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Secure & Reliable</h3>
               <p className="text-gray-600">Enterprise-grade security with 99.9% uptime</p>
             </div>
             
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-8 bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-purple-50">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
                 <Globe className="w-6 h-6 text-purple-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Pakistani Context</h3>
               <p className="text-gray-600">Understands local culture, language, and preferences</p>
             </div>
             
-            <div className="text-center p-8 bg-white rounded-2xl shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-8 bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-orange-50">
+              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md">
                 <Users className="w-6 h-6 text-orange-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Developer Friendly</h3>
