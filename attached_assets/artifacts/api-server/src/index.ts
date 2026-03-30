@@ -25,7 +25,7 @@ if (Number.isNaN(port) || port <= 0) {
 app.use(express.static(path.join(__dirname, '../../pak-bot/dist')));
 
 // Catch-all route for React SPA
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
   res.sendFile(path.join(__dirname, '../../pak-bot/dist/index.html'));
 });
 
