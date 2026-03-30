@@ -22,11 +22,11 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, '../../pak-bot/dist')));
+app.use(express.static(path.join(__dirname, '../../../pak-bot/dist')));
 
 // Catch-all route for React SPA
 app.get('/{*splat}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../pak-bot/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../../../pak-bot/dist/index.html'));
 });
 
 app.listen(port, (err) => {
