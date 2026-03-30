@@ -21,11 +21,12 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../../../../artifacts/pak-bot/dist/public')));
+const distPath = path.resolve('/opt/render/project/src/attached_assets/artifacts/pak-bot/dist/public');
+
+app.use(express.static(distPath));
 
 app.get('/{*splat}', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../../../artifacts/pak-bot/dist/public/index.html'));
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(port, (err) => {
