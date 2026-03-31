@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bot, Code, Zap, Shield, Globe, Users, Copy, Check } from "lucide-react";
+import { Bot, Code, Shield, ArrowRight, Zap, Globe, Users, Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -249,6 +249,46 @@ console.log(data.reply);`}</code>
               <span className="block font-semibold text-gray-900">Support</span>
               <span className="text-gray-600">pakbot.support@gmail.com</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Try PakBot Live Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Try PakBot Live
+              <span className="block text-emerald-600">Experience AI Assistant</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Interact with PakBot in real-time and see how it can help with your queries.
+            </p>
+          </div>
+
+          <div className="max-w-md mx-auto">
+            <a 
+              href="https://pakbot.online" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50 cursor-pointer">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                    <Bot className="w-10 h-10 text-emerald-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Start Chatting</h3>
+                  <p className="text-gray-600 mb-6">
+                    Open PakBot in a new tab and start your conversation instantly
+                  </p>
+                  <div className="flex items-center gap-2 text-emerald-600 font-medium">
+                    <span>Launch Live Chat</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>
