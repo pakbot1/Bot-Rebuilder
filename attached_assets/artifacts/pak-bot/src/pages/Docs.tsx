@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Bot, Code, Shield, Key, CreditCard, AlertCircle, Check } from "lucide-react";
+import { Bot, Code, Shield, Key, CreditCard, AlertCircle, Check, Rocket, Zap, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Docs() {
@@ -182,9 +182,9 @@ console.log(data.reply);`}</code>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-emerald-600">RS. 3K</span>
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                <Rocket className="w-8 h-8 text-emerald-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Starter</h3>
               <p className="text-gray-600 mb-4">Perfect for small projects and testing</p>
@@ -196,12 +196,12 @@ console.log(data.reply);`}</code>
               <div className="text-3xl font-bold text-gray-900">Rs. 3,000/month</div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center hover:shadow-xl transition-shadow relative">
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-blue-50 relative">
               <div className="absolute -top-3 -right-3 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full">
                 Popular
               </div>
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">RS. 5K</span>
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                <Zap className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Pro</h3>
               <p className="text-gray-600 mb-4">For growing businesses and startups</p>
@@ -213,9 +213,9 @@ console.log(data.reply);`}</code>
               <div className="text-3xl font-bold text-gray-900">Rs. 5,000/month</div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">∞</span>
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-purple-50">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                <Crown className="w-8 h-8 text-purple-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Enterprise</h3>
               <p className="text-gray-600 mb-4">For large organizations with high volume</p>
