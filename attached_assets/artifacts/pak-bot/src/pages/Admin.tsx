@@ -18,7 +18,7 @@ export default function Admin() {
   );
   
   // Admin password (you can change this)
-  const adminPassword = "admin123456";
+  const adminPassword = "admin-pakbot-24";
   
   // Real data management
   const [totalUsers, setTotalUsers] = useState(0);
