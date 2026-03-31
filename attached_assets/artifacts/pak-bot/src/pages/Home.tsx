@@ -44,7 +44,7 @@ console.log(data.reply);`;
             <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Admin
             </a>
-            <a href="#endpoints" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+            <a href="/docs#api-endpoints" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Endpoints
             </a>
           </div>
@@ -137,41 +137,6 @@ console.log(data.reply);`;
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Developer Friendly</h3>
               <p className="text-gray-600">Simple REST API with comprehensive documentation</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* API Endpoints Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">API Endpoints</h2>
-            <p className="text-xl text-gray-600">Complete REST coverage for advanced use cases.</p>
-          </div>
-          
-          <div className="space-y-4 max-w-4xl mx-auto">
-            {[
-              { method: "POST", path: "/api/chat", desc: "Send a message and receive an AI reply. Supports optional image (base64) and url fields." },
-              { method: "POST", path: "/api/chat/stream", desc: "Same as /chat but streams the reply token-by-token via Server-Sent Events." },
-              { method: "GET", path: "/api/bots", desc: "List all registered developer bots" },
-              { method: "POST", path: "/api/bots", desc: "Create a new custom bot profile" },
-              { method: "GET", path: "/api/bots/:id/conversations", desc: "List conversations for a bot" },
-              { method: "POST", path: "/api/bots/:id/conversations", desc: "Start a new conversation session" },
-              { method: "POST", path: "/api/bots/:id/webhooks", desc: "Register a webhook for events" },
-            ].map((ep, i) => (
-              <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                  <span className={cn(
-                    "px-3 py-1 rounded-md text-xs font-mono font-bold tracking-wider",
-                    ep.method === "GET" ? "bg-blue-100 text-blue-700" : "bg-emerald-100 text-emerald-700"
-                  )}>
-                    {ep.method}
-                  </span>
-                  <code className="text-sm font-bold text-gray-900">{ep.path}</code>
-                </div>
-                <p className="text-gray-600 text-sm">{ep.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
