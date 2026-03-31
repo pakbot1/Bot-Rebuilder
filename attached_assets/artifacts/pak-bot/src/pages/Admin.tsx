@@ -13,16 +13,20 @@ export default function Admin() {
   // Admin password (you can change this)
   const adminPassword = "admin123456";
   
-  // Mock data for dashboard (real-time updates)
-  const [activeKeys, setActiveKeys] = useState(89);
+  // Real data management
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [activeKeys, setActiveKeys] = useState(0);
   const [totalRequests, setTotalRequests] = useState(15432);
+  const [keyStatuses, setKeyStatuses] = useState<{[key: string]: {active: boolean, user: string}}>({});
 
-  // Real-time updates for stats
+  // Simulate API calls (requests update)
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveKeys(prev => Math.min(prev + Math.floor(Math.random() * 2), 150));
-      setTotalRequests(prev => prev + Math.floor(Math.random() * 15));
-    }, 3000);
+      // Only update requests when API is being used (random simulation)
+      if (Math.random() > 0.3) { // 70% chance of API call
+        setTotalRequests(prev => prev + Math.floor(Math.random() * 5) + 1);
+      }
+    }, 4000); // Check every 4 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -50,13 +54,54 @@ export default function Admin() {
     ).join('');
     const newKey = `pk_${randomHex}`;
     
-    setGeneratedKeys(prev => [newKey, ...prev.slice(0, 4)]); // Keep last 5 keys
+    // Update real data
+    setGeneratedKeys(prev => [newKey, ...prev.slice(0, 4)]);
+    setTotalUsers(prev => prev + 1); // Add new user
+    setActiveKeys(prev => prev + 1); // Add active key
+    setKeyStatuses(prev => ({
+      ...prev,
+      [newKey]: { active: true, user: `User${totalUsers + 1}` }
+    }));
   };
 
   const copyKey = (key: string, index: number) => {
     navigator.clipboard.writeText(key);
     setCopiedKey(index);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const deleteKey = (key: string, index: number) => {
+    // Remove from generated keys
+    setGeneratedKeys(prev => prev.filter((_, i) => i !== index));
+    
+    // Update total users (decrease)
+    setTotalUsers(prev => prev - 1);
+    
+    // Update active keys if key was active
+    if (keyStatuses[key]?.active) {
+      setActiveKeys(prev => prev - 1);
+    }
+    
+    // Remove from key statuses
+    setKeyStatuses(prev => {
+      const newStatuses = {...prev};
+      delete newStatuses[key];
+      return newStatuses;
+    });
+  };
+
+  const toggleKeyStatus = (key: string) => {
+    setKeyStatuses(prev => ({
+      ...prev,
+      [key]: { ...prev[key], active: !prev[key].active }
+    }));
+    
+    // Update active keys count
+    if (keyStatuses[key]?.active) {
+      setActiveKeys(prev => prev - 1); // Deactivating
+    } else {
+      setActiveKeys(prev => prev + 1); // Activating
+    }
   };
 
   // If not authenticated, show login screen
@@ -187,8 +232,16 @@ export default function Admin() {
             </p>
           </div>
 
-          {/* Stats Grid - Only 2 cards now */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-12">
+          {/* Stats Grid - 3 cards now */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-blue-50">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">{totalUsers}</h3>
+              <p className="text-gray-600">Total Users</p>
+            </div>
+
             <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50">
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lock className="w-8 h-8 text-emerald-600" />
@@ -207,7 +260,7 @@ export default function Admin() {
           </div>
 
           {/* API Key Generator */}
-          <div className="max-w-2xl mx-auto mb-12">
+          <div className="max-w-4xl mx-auto mb-12">
             <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8">
               <div className="flex items-center mb-6">
                 <Lock className="w-6 h-6 text-red-600 mr-3" />
@@ -227,29 +280,55 @@ export default function Admin() {
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-gray-700">Generated Keys:</h4>
                   {generatedKeys.map((key, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                      <div className="flex items-center justify-between">
-                        <code className="text-sm font-mono text-gray-900 flex-1 truncate">
-                          {key}
-                        </code>
-                        <Button
-                          onClick={() => copyKey(key, index)}
-                          variant="outline"
-                          size="sm"
-                          className="ml-4"
-                        >
-                          {copiedKey === index ? (
-                            <>
-                              <Check className="w-4 h-4 mr-2" />
-                              Copied!
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-4 h-4 mr-2" />
-                              Copy
-                            </>
-                          )}
-                        </Button>
+                    <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <code className="text-sm font-mono text-gray-900 flex-1 truncate">
+                            {key}
+                          </code>
+                          <span className="text-xs text-gray-500">
+                            {keyStatuses[key]?.user || 'Unknown'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => toggleKeyStatus(key)}
+                            variant={keyStatuses[key]?.active ? "secondary" : "outline"}
+                            size="sm"
+                            className="text-xs"
+                          >
+                            {keyStatuses[key]?.active ? 'Disable' : 'Enable'}
+                          </Button>
+                          <Button
+                            onClick={() => copyKey(key, index)}
+                            variant="outline"
+                            size="sm"
+                            className="text-xs"
+                          >
+                            {copiedKey === index ? (
+                              <>
+                                <Check className="w-3 h-3 mr-1" />
+                                Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3 mr-1" />
+                                Copy
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => deleteKey(key, index)}
+                            variant="destructive"
+                            size="sm"
+                            className="text-xs"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Status: {keyStatuses[key]?.active ? 'Active' : 'Disabled'}
                       </div>
                     </div>
                   ))}
