@@ -7,36 +7,22 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const [generatedKeys, setGeneratedKeys] = useState<string[]>([]);
+  const [copiedKey, setCopiedKey] = useState<number | null>(null);
   
   // Admin password (you can change this)
   const adminPassword = "admin123456";
   
-  // Mock data for dashboard
-  const [totalUsers, setTotalUsers] = useState(127);
+  // Mock data for dashboard (real-time updates)
   const [activeKeys, setActiveKeys] = useState(89);
   const [totalRequests, setTotalRequests] = useState(15432);
-  const [systemStatus, setSystemStatus] = useState("Operational");
 
-  // Dynamic system status that changes
-  useEffect(() => {
-    const statuses = ["Operational", "Healthy", "Optimal"];
-    let index = 0;
-    
-    const interval = setInterval(() => {
-      index = (index + 1) % statuses.length;
-      setSystemStatus(statuses[index]);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Dynamic user counts
+  // Real-time updates for stats
   useEffect(() => {
     const interval = setInterval(() => {
-      setTotalUsers(prev => prev + Math.floor(Math.random() * 3));
       setActiveKeys(prev => Math.min(prev + Math.floor(Math.random() * 2), 150));
-      setTotalRequests(prev => prev + Math.floor(Math.random() * 10));
-    }, 5000);
+      setTotalRequests(prev => prev + Math.floor(Math.random() * 15));
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -56,6 +42,21 @@ export default function Admin() {
     setIsAuthenticated(false);
     setPassword("");
     setShowPassword(false);
+  };
+
+  const generateApiKey = () => {
+    const randomHex = Array.from({length: 32}, () => 
+      Math.floor(Math.random() * 16).toString(16)
+    ).join('');
+    const newKey = `pk_${randomHex}`;
+    
+    setGeneratedKeys(prev => [newKey, ...prev.slice(0, 4)]); // Keep last 5 keys
+  };
+
+  const copyKey = (key: string, index: number) => {
+    navigator.clipboard.writeText(key);
+    setCopiedKey(index);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
   // If not authenticated, show login screen
@@ -186,39 +187,8 @@ export default function Admin() {
             </p>
           </div>
 
-          {/* System Status Card */}
-          <div className="max-w-md mx-auto mb-8">
-            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-6 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-red-50">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                    <Activity className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">System Status</h3>
-                    <p className="text-sm text-gray-600">Platform health</p>
-                  </div>
-                </div>
-                <div className="px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700">
-                  {systemStatus}
-                </div>
-              </div>
-              <div className="flex items-center justify-end text-sm text-gray-600">
-                <span>Uptime: 99.9%</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-12">
-            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-blue-50">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">{totalUsers}</h3>
-              <p className="text-gray-600">Total Users</p>
-            </div>
-
+          {/* Stats Grid - Only 2 cards now */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto mb-12">
             <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50">
               <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Lock className="w-8 h-8 text-emerald-600" />
@@ -233,6 +203,58 @@ export default function Admin() {
               </div>
               <h3 className="text-3xl font-bold text-gray-900 mb-2">{totalRequests.toLocaleString()}</h3>
               <p className="text-gray-600">Total Requests</p>
+            </div>
+          </div>
+
+          {/* API Key Generator */}
+          <div className="max-w-2xl mx-auto mb-12">
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8">
+              <div className="flex items-center mb-6">
+                <Lock className="w-6 h-6 text-red-600 mr-3" />
+                <h3 className="text-xl font-semibold text-gray-900">API Key Generator</h3>
+              </div>
+              
+              <div className="text-center mb-6">
+                <Button 
+                  onClick={generateApiKey}
+                  className="bg-red-600 hover:bg-red-700 text-white px-8"
+                >
+                  Generate New API Key
+                </Button>
+              </div>
+
+              {generatedKeys.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700">Generated Keys:</h4>
+                  {generatedKeys.map((key, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono text-gray-900 flex-1 truncate">
+                          {key}
+                        </code>
+                        <Button
+                          onClick={() => copyKey(key, index)}
+                          variant="outline"
+                          size="sm"
+                          className="ml-4"
+                        >
+                          {copiedKey === index ? (
+                            <>
+                              <Check className="w-4 h-4 mr-2" />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copy
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
