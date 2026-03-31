@@ -9,6 +9,9 @@ export default function Admin() {
   const [loginError, setLoginError] = useState(false);
   const [generatedKeys, setGeneratedKeys] = useState<string[]>([]);
   const [copiedKey, setCopiedKey] = useState<number | null>(null);
+  const [showGenerateForm, setShowGenerateForm] = useState(false);
+  const [developerName, setDeveloperName] = useState("");
+  const [developerEmail, setDeveloperEmail] = useState("");
   
   // Admin password (you can change this)
   const adminPassword = "admin123456";
@@ -48,7 +51,11 @@ export default function Admin() {
     setShowPassword(false);
   };
 
-  const generateApiKey = () => {
+  const generateApiKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!developerName.trim()) return;
+    
     const randomHex = Array.from({length: 32}, () => 
       Math.floor(Math.random() * 16).toString(16)
     ).join('');
@@ -60,8 +67,13 @@ export default function Admin() {
     setActiveKeys(prev => prev + 1); // Add active key
     setKeyStatuses(prev => ({
       ...prev,
-      [newKey]: { active: true, user: `User${totalUsers + 1}` }
+      [newKey]: { active: true, user: developerName }
     }));
+    
+    // Reset form
+    setDeveloperName("");
+    setDeveloperEmail("");
+    setShowGenerateForm(false);
   };
 
   const copyKey = (key: string, index: number) => {
@@ -269,12 +281,68 @@ export default function Admin() {
               
               <div className="text-center mb-6">
                 <Button 
-                  onClick={generateApiKey}
+                  onClick={() => setShowGenerateForm(true)}
                   className="bg-red-600 hover:bg-red-700 text-white px-8"
                 >
                   Generate New API Key
                 </Button>
               </div>
+
+              {/* Generate Key Form */}
+              {showGenerateForm && (
+                <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200">
+                  <form onSubmit={generateApiKey} className="space-y-4">
+                    <div>
+                      <label htmlFor="developerName" className="block text-sm font-medium text-gray-700 mb-2">
+                        Developer Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="developerName"
+                        value={developerName}
+                        onChange={(e) => setDeveloperName(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="Enter developer name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="developerEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                        Developer Email <span className="text-gray-400">(optional)</span>
+                      </label>
+                      <input
+                        type="email"
+                        id="developerEmail"
+                        value={developerEmail}
+                        onChange={(e) => setDeveloperEmail(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="developer@example.com"
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          setShowGenerateForm(false);
+                          setDeveloperName("");
+                          setDeveloperEmail("");
+                        }}
+                        className="flex-1"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                        disabled={!developerName.trim()}
+                      >
+                        Generate Key
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              )}
 
               {generatedKeys.length > 0 && (
                 <div className="space-y-3">
