@@ -68,6 +68,8 @@ async function authenticateKey(
   res: any,
 ): Promise<typeof apiKeysTable.$inferSelect | null> {
   const apiKey = req.headers["x-api-key"] as string | undefined;
+  logger.info({ apiKey: apiKey || "MISSING" }, "DEBUG: X-API-Key header received");
+  
   if (!apiKey) {
     res
       .status(401)
@@ -77,19 +79,37 @@ async function authenticateKey(
       });
     return null;
   }
+  
   const keyRecord = await db
     .select()
     .from(apiKeysTable)
     .where(eq(apiKeysTable.key, apiKey))
     .limit(1);
+  
+  logger.info({ 
+    searchKey: apiKey, 
+    foundRecords: keyRecord.length,
+    firstRecord: keyRecord[0] || "NONE"
+  }, "DEBUG: Database query result");
+  
   if (keyRecord.length === 0) {
+    logger.info({ searchKey: apiKey }, "DEBUG: API key not found in database");
     res.status(401).json({ error: "Invalid API key." });
     return null;
   }
+  
+  logger.info({ 
+    isActive: keyRecord[0].is_active,
+    recordDetails: keyRecord[0]
+  }, "DEBUG: Checking API key active status");
+  
   if (!keyRecord[0].is_active) {
+    logger.info({ searchKey: apiKey }, "DEBUG: API key is inactive");
     res.status(401).json({ error: "API key is disabled." });
     return null;
   }
+  
+  logger.info({ searchKey: apiKey }, "DEBUG: API key validation successful");
   return keyRecord[0];
 }
 
