@@ -101,11 +101,15 @@ async function authenticateKey(
   
   logger.info({ 
     isActive: keyRecord[0].is_active,
+    isActiveType: typeof keyRecord[0].is_active,
     recordDetails: keyRecord[0]
   }, "DEBUG: Checking API key active status");
   
-  if (!keyRecord[0].is_active) {
-    logger.info({ searchKey: apiKey }, "DEBUG: API key is inactive");
+  // Handle both boolean and string representations of true
+  const isActive = keyRecord[0].is_active === true || keyRecord[0].is_active === 'true';
+  
+  if (!isActive) {
+    logger.info({ searchKey: apiKey, originalValue: keyRecord[0].is_active }, "DEBUG: API key is inactive");
     res.status(401).json({ error: "API key is disabled." });
     return null;
   }
