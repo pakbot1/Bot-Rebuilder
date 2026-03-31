@@ -154,7 +154,6 @@ export default function Developer() {
                   </Button>
                 </div>
               </div>
-              </div>
             </div>
           </div>
         </div>
