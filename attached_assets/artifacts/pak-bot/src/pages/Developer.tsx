@@ -88,8 +88,7 @@ export default function Developer() {
                   {isActive ? 'Active' : 'Inactive'}
                 </div>
               </div>
-              <div className="flex items-center justify-between text-sm text-gray-600">
-                <span>Last checked: Just now</span>
+              <div className="flex items-center justify-end text-sm text-gray-600">
                 <span>Response time: 120ms</span>
               </div>
             </div>
