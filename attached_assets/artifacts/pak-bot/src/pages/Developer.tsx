@@ -13,6 +13,14 @@ export default function Developer() {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
 
+  // List of valid API keys (in a real app, this would come from backend)
+  const validApiKeys = [
+    "pk_1234567890abcdef1234567890abcdef",
+    "pk_1223344556789abcdef1234567890abcdef",
+    "pk_9876543210fedcba0987654321fedcba",
+    "pk_abcd1234567890efghijklmnop123456"
+  ];
+
   // Dynamic response time that changes every 2.5 seconds
   useEffect(() => {
     const responseTimes = [116, 119, 120, 122, 125];
@@ -42,9 +50,11 @@ export default function Developer() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === apiKey) {
+    if (validApiKeys.includes(password)) {
       setIsAuthenticated(true);
       setLoginError(false);
+      // Set the API key to the one that was used for login
+      setApiKey(password);
     } else {
       setLoginError(true);
       setTimeout(() => setLoginError(false), 2000);
