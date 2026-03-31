@@ -122,7 +122,7 @@ export default function Developer() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <Button
                     onClick={handleCopyKey}
                     variant="outline"
@@ -138,22 +138,6 @@ export default function Developer() {
                   >
                     {isActive ? <PowerOff className="w-4 h-4" /> : <Power className="w-4 h-4" />}
                     {isActive ? 'Disable' : 'Enable'}
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <Shield className="w-4 h-4" />
-                    Regenerate
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <Activity className="w-4 h-4" />
-                    Usage
                   </Button>
                 </div>
               </div>
