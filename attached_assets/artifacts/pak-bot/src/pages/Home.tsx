@@ -85,7 +85,7 @@ console.log(data.reply);`;
               >
                 Get Started
               </Button>
-              <Button variant="outline" size="lg" className="px-12 py-4 text-lg">
+              <Button variant="outline" size="lg" className="px-12 py-4 text-lg" onClick={() => window.location.href = '/docs'}>
                 View Documentation
               </Button>
             </div>
