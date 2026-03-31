@@ -218,46 +218,6 @@ console.log(data.reply);`}</code>
         </div>
       </section>
 
-      {/* Contact Sales Section */}
-      <section id="contact-cta" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Get Started Today
-              <span className="block text-emerald-600">Contact API Sales</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Ready to integrate PakBot into your applications? Get in touch with our sales team.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
-            <a href="https://calendly.com/faiwebz" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                Contact API Sales
-              </Button>
-            </a>
-            <a href="mailto:pakbot.work@gmail.com" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full">
-                Email Support
-              </Button>
-            </a>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm">
-            <div className="text-center">
-              <span className="block font-semibold text-gray-900">API Sales</span>
-              <span className="text-gray-600">pakbot.work@gmail.com</span>
-            </div>
-            <div className="hidden sm:block w-px h-10 bg-gray-300"></div>
-            <div className="text-center">
-              <span className="block font-semibold text-gray-900">Support</span>
-              <span className="text-gray-600">pakbot.support@gmail.com</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Try PakBot Live Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -298,6 +258,46 @@ console.log(data.reply);`}</code>
                 </div>
               </div>
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Sales Section */}
+      <section id="contact-cta" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Get Started Today
+              <span className="block text-emerald-600">Contact API Sales</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Ready to integrate PakBot into your applications? Get in touch with our sales team.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+            <a href="https://calendly.com/faiwebz" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                Contact API Sales
+              </Button>
+            </a>
+            <a href="mailto:pakbot.work@gmail.com" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full">
+                Email Support
+              </Button>
+            </a>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm">
+            <div className="text-center">
+              <span className="block font-semibold text-gray-900">API Sales</span>
+              <span className="text-gray-600">pakbot.work@gmail.com</span>
+            </div>
+            <div className="hidden sm:block w-px h-10 bg-gray-300"></div>
+            <div className="text-center">
+              <span className="block font-semibold text-gray-900">Support</span>
+              <span className="text-gray-600">pakbot.support@gmail.com</span>
+            </div>
           </div>
         </div>
       </section>
