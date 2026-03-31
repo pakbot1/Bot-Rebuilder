@@ -424,23 +424,13 @@ export default function Admin() {
                 <h3 className="text-xl font-semibold text-gray-900">Admin Actions</h3>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
                 <Button 
                   onClick={() => setShowBotInstructions(true)}
                   className="flex items-center justify-center gap-2"
                 >
                   <Activity className="w-4 h-4" />
                   Bot Instructions
-                </Button>
-                
-                <Button variant="outline" className="flex items-center justify-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Manage Users
-                </Button>
-                
-                <Button variant="outline" className="flex items-center justify-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  API Keys
                 </Button>
               </div>
             </div>
@@ -464,7 +454,7 @@ export default function Admin() {
                   </Button>
                 </div>
                 
-                <div className="p-6">
+                <div className="p-6 overflow-y-auto max-h-[60vh]">
                   <p className="text-sm text-gray-600 mb-4">
                     Define PakBot's personality, behavior, and response patterns. These instructions will be used by the AI agent to shape its responses.
                   </p>
@@ -472,7 +462,7 @@ export default function Admin() {
                   <textarea
                     value={botInstructions}
                     onChange={(e) => setBotInstructions(e.target.value)}
-                    className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none font-mono text-sm"
+                    className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-y font-mono text-sm"
                     placeholder="Enter bot instructions..."
                   />
                   
