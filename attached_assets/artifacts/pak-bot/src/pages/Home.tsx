@@ -41,7 +41,7 @@ console.log(data.reply);`;
             <a href="/developer" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Developer
             </a>
-            <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+            <a href="/admin" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Admin
             </a>
             <a href="/docs" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
