@@ -55,38 +55,59 @@ export default function Admin() {
     setShowPassword(false);
   };
 
-  const generateApiKey = (e: React.FormEvent) => {
+  const generateApiKey = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!developerName.trim()) return;
     
-    const randomHex = Array.from({length: 32}, () => 
-      Math.floor(Math.random() * 16).toString(16)
-    ).join('');
-    const newKey = `pk_${randomHex}`;
-    
-    // Update real data
-    setGeneratedKeys(prev => [newKey, ...prev.slice(0, 4)]);
-    setTotalUsers(prev => prev + 1); // Add new user
-    setActiveKeys(prev => prev + 1); // Add active key
-    setKeyStatuses(prev => ({
-      ...prev,
-      [newKey]: { active: true, user: developerName }
-    }));
-    
-    // Save to localStorage for Developer section
     try {
-      const existingKeys = JSON.parse(localStorage.getItem('adminGeneratedKeys') || '[]');
-      const updatedKeys = [newKey, ...existingKeys].slice(0, 10); // Keep last 10 keys
-      localStorage.setItem('adminGeneratedKeys', JSON.stringify(updatedKeys));
+      // Send POST request to backend to generate and save API key
+      const response = await fetch('/api/admin/keys', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Key': 'admin-pakbot-24'
+        },
+        body: JSON.stringify({
+          name: developerName,
+          email: developerEmail || undefined
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate API key');
+      }
+
+      const newKeyData = await response.json();
+      const newKey = newKeyData.key;
+      
+      // Update real data
+      setGeneratedKeys(prev => [newKey, ...prev.slice(0, 4)]);
+      setTotalUsers(prev => prev + 1); // Add new user
+      setActiveKeys(prev => prev + 1); // Add active key
+      setKeyStatuses(prev => ({
+        ...prev,
+        [newKey]: { active: true, user: developerName }
+      }));
+      
+      // Save to localStorage for Developer section
+      try {
+        const existingKeys = JSON.parse(localStorage.getItem('adminGeneratedKeys') || '[]');
+        const updatedKeys = [newKey, ...existingKeys].slice(0, 10); // Keep last 10 keys
+        localStorage.setItem('adminGeneratedKeys', JSON.stringify(updatedKeys));
+      } catch (error) {
+        console.error('Failed to save key to localStorage:', error);
+      }
+      
+      // Reset form
+      setDeveloperName("");
+      setDeveloperEmail("");
+      setShowGenerateForm(false);
+      
     } catch (error) {
-      console.error('Failed to save key to localStorage:', error);
+      console.error('Failed to generate API key:', error);
+      // You could add error handling UI here if needed
     }
-    
-    // Reset form
-    setDeveloperName("");
-    setDeveloperEmail("");
-    setShowGenerateForm(false);
   };
 
   const copyKey = (key: string, index: number) => {
