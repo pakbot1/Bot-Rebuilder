@@ -76,8 +76,28 @@ router.post("/admin/keys", async (req, res) => {
     key: `pk_${randomUUID().replace(/-/g, "")}`,
     isActive: true,
   };
-  await db.insert(apiKeysTable).values(newKey);
+  
+  console.log("DEBUG: About to insert API key", { 
+    table: "apiKeysTable", 
+    keyData: newKey,
+    tableName: apiKeysTable.name
+  });
+  
+  try {
+    await db.insert(apiKeysTable).values(newKey);
+    console.log("DEBUG: API key insert successful", { key: newKey.key });
+  } catch (error) {
+    console.log("DEBUG: API key insert failed", { error, key: newKey.key });
+    res.status(500).json({ error: "Failed to create API key." });
+    return;
+  }
+  
   const created = await db.select().from(apiKeysTable).where(eq(apiKeysTable.id, newKey.id)).limit(1);
+  console.log("DEBUG: Verification query result", { 
+    foundRecords: created.length,
+    record: created[0] || "NONE"
+  });
+  
   const k = created[0];
   res.status(201).json({
     id: k.id,
