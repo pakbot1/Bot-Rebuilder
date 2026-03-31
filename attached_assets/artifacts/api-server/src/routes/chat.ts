@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { db, apiKeysTable, instructionsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import Groq from "groq-sdk";
+import { logger } from "../lib/logger";
 import {
   SendChatMessageBody,
   SendChatMessageResponse,
