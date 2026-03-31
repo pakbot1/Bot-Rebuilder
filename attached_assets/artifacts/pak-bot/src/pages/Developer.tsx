@@ -9,7 +9,7 @@ export default function Developer() {
   const [isActive, setIsActive] = useState(true);
   const [responseTime, setResponseTime] = useState(120);
 
-  // Dynamic response time that changes every 5 seconds
+  // Dynamic response time that changes every 2.5 seconds
   useEffect(() => {
     const responseTimes = [116, 119, 120, 122, 125];
     let index = 2; // Start with 120ms
@@ -17,7 +17,7 @@ export default function Developer() {
     const interval = setInterval(() => {
       index = (index + 1) % responseTimes.length;
       setResponseTime(responseTimes[index]);
-    }, 5000);
+    }, 2500); // 2.5 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -154,23 +154,6 @@ export default function Developer() {
                   </Button>
                 </div>
               </div>
-
-              {/* Key Info */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-500">Created:</span>
-                    <span className="ml-2 text-gray-900">March 15, 2026</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Requests:</span>
-                    <span className="ml-2 text-gray-900">1,247 / 5,000</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Plan:</span>
-                    <span className="ml-2 text-gray-900">Pro</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
