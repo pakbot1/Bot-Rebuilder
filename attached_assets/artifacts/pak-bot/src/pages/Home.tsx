@@ -35,6 +35,9 @@ console.log(data.reply);`;
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-16 space-x-8">
+            <a href="/" className="text-gray-900 hover:text-emerald-600 font-medium transition-colors">
+              Home
+            </a>
             <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Developer
             </a>
@@ -149,7 +152,7 @@ console.log(data.reply);`;
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+            <div className="text-center p-8 bg-gray-50 rounded-2xl shadow-lg shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-emerald-50">
               <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-emerald-600 font-bold text-lg">1</span>
               </div>
@@ -157,7 +160,7 @@ console.log(data.reply);`;
               <p className="text-gray-600">Contact sales to provision your enterprise key.</p>
             </div>
             
-            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+            <div className="text-center p-8 bg-gray-50 rounded-2xl shadow-lg shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-emerald-50">
               <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-emerald-600 font-bold text-lg">2</span>
               </div>
@@ -165,7 +168,7 @@ console.log(data.reply);`;
               <p className="text-gray-600">Send a POST request with your message context.</p>
             </div>
             
-            <div className="text-center p-8 bg-gray-50 rounded-2xl">
+            <div className="text-center p-8 bg-gray-50 rounded-2xl shadow-lg shadow-gray-900/10 border border-gray-100 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-emerald-50">
               <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-emerald-600 font-bold text-lg">3</span>
               </div>
