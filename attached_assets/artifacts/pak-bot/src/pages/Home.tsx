@@ -218,14 +218,19 @@ console.log(data.reply);`}</code>
         </div>
       </section>
 
-      {/* Contact CTA Section */}
-      <section id="contact-cta" className="text-center py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-emerald-600 mb-6 text-center">Ready to integrate PakBot?</h2>
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            Want to integrate PakBot into your product? Email us to get your API key, discuss pricing, and get onboarded to the platform.
-          </p>
-          
+      {/* Contact Sales Section */}
+      <section id="contact-cta" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Get Started Today
+              <span className="block text-emerald-600">Contact API Sales</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Ready to integrate PakBot into your applications? Get in touch with our sales team.
+            </p>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
             <a href="https://calendly.com/faiwebz" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
@@ -275,8 +280,12 @@ console.log(data.reply);`}</code>
             >
               <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-8 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50 cursor-pointer">
                 <div className="flex flex-col items-center text-center">
-                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
-                    <Bot className="w-10 h-10 text-emerald-600" />
+                  <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg shadow-emerald-500/20 mb-6">
+                    <img 
+                      src="/logo.png" 
+                      alt="PakBot Logo" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">Start Chatting</h3>
                   <p className="text-gray-600 mb-6">
