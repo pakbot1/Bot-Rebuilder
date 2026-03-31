@@ -265,9 +265,14 @@ console.log(data.reply);`}</code>
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
-            <a href="mailto:pakbot.work@gmail.com" className="w-full sm:w-auto">
+            <a href="https://calendly.com/faiwebz" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
                 Contact API Sales
+              </Button>
+            </a>
+            <a href="mailto:pakbot.work@gmail.com" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full">
+                Email Support
               </Button>
             </a>
           </div>

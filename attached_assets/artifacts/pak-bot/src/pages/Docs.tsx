@@ -273,6 +273,14 @@ console.log(data.reply);`}</code>
             </div>
           </div>
         </div>
+        
+        <div className="text-center mt-12">
+          <a href="https://calendly.com/faiwebz" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white px-8">
+              Contact API Sales
+            </Button>
+          </a>
+        </div>
       </section>
 
       {/* Footer */}
