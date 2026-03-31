@@ -12,14 +12,11 @@ export default function Docs() {
             <a href="/" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Home
             </a>
-            <a href="#" className="text-gray-900 hover:text-emerald-600 font-medium transition-colors">
+            <a href="/docs" className="text-gray-900 hover:text-emerald-600 font-medium transition-colors">
               Documentation
             </a>
-            <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+            <a href="/developer" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Developer
-            </a>
-            <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
-              Admin
             </a>
           </div>
         </div>

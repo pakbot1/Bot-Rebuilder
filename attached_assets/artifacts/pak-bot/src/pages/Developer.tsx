@@ -81,9 +81,6 @@ export default function Developer() {
               <a href="/developer" className="text-gray-900 hover:text-emerald-600 font-medium transition-colors">
                 Developer
               </a>
-              <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
-                Admin
-              </a>
               <a href="/docs" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
                 Documentation
               </a>
@@ -163,9 +160,6 @@ export default function Developer() {
               </a>
               <a href="/developer" className="text-gray-900 hover:text-emerald-600 font-medium transition-colors">
                 Developer
-              </a>
-              <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
-                Admin
               </a>
               <a href="/docs" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
                 Documentation
