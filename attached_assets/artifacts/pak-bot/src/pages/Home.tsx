@@ -41,8 +41,8 @@ console.log(data.reply);`;
             <a href="#" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
               Admin
             </a>
-            <a href="/docs#api-endpoints" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
-              Endpoints
+            <a href="/docs" className="text-gray-600 hover:text-emerald-600 font-medium transition-colors">
+              Documentation
             </a>
           </div>
         </div>
