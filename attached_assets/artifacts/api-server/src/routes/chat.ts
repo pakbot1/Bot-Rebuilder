@@ -86,7 +86,7 @@ async function authenticateKey(
     res.status(401).json({ error: "Invalid API key." });
     return null;
   }
-  if (!keyRecord[0].isActive) {
+  if (!keyRecord[0].is_active) {
     res.status(401).json({ error: "API key is disabled." });
     return null;
   }
