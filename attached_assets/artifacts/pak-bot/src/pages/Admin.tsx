@@ -66,7 +66,7 @@ export default function Admin() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Admin-Key': 'admin-pakbot-24'
+          'X-Admin-Key': 'pakbot-admin-2024'
         },
         body: JSON.stringify({
           name: developerName,
