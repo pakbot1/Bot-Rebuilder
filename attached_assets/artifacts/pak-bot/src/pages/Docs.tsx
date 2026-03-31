@@ -59,17 +59,7 @@ export default function Docs() {
                 </span>
                 <code className="text-sm font-bold text-gray-900">/api/chat</code>
               </div>
-              <p className="text-gray-600">Send message to PakBot and receive AI response.</p>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-blue-100 text-blue-700">
-                  GET
-                </span>
-                <code className="text-sm font-bold text-gray-900">/api/health</code>
-              </div>
-              <p className="text-gray-600">Check API status and availability.</p>
+              <p className="text-gray-600">Send a message and receive an AI reply. Supports optional image (base64) and url fields.</p>
             </div>
 
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
@@ -77,19 +67,59 @@ export default function Docs() {
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-emerald-100 text-emerald-700">
                   POST
                 </span>
-                <code className="text-sm font-bold text-gray-900">/api/keys/generate</code>
+                <code className="text-sm font-bold text-gray-900">/api/chat/stream</code>
               </div>
-              <p className="text-gray-600">Generate new API key for your application.</p>
+              <p className="text-gray-600">Same as /chat but streams the reply token-by-token via Server-Sent Events.</p>
             </div>
 
             <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-red-100 text-red-700">
-                  DELETE
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-blue-100 text-blue-700">
+                  GET
                 </span>
-                <code className="text-sm font-bold text-gray-900">/api/keys/:key</code>
+                <code className="text-sm font-bold text-gray-900">/api/bots</code>
               </div>
-              <p className="text-gray-600">Delete or revoke existing API key.</p>
+              <p className="text-gray-600">List all registered developer bots</p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-emerald-100 text-emerald-700">
+                  POST
+                </span>
+                <code className="text-sm font-bold text-gray-900">/api/bots</code>
+              </div>
+              <p className="text-gray-600">Create a new custom bot profile</p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-blue-100 text-blue-700">
+                  GET
+                </span>
+                <code className="text-sm font-bold text-gray-900">/api/bots/:id/conversations</code>
+              </div>
+              <p className="text-gray-600">List conversations for a bot</p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-emerald-100 text-emerald-700">
+                  POST
+                </span>
+                <code className="text-sm font-bold text-gray-900">/api/bots/:id/conversations</code>
+              </div>
+              <p className="text-gray-600">Start a new conversation session</p>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-emerald-100 text-emerald-700">
+                  POST
+                </span>
+                <code className="text-sm font-bold text-gray-900">/api/bots/:id/webhooks</code>
+              </div>
+              <p className="text-gray-600">Register a webhook for events</p>
             </div>
           </div>
         </div>
@@ -143,7 +173,7 @@ console.log(data.reply);`}</code>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-6 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300">
               <div className="flex items-center mb-4">
                 <Key className="w-8 h-8 text-emerald-600 mr-3" />
                 <h3 className="text-lg font-semibold text-gray-900">API Key Required</h3>
@@ -158,7 +188,7 @@ console.log(data.reply);`}</code>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-200 p-6 hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300">
               <div className="flex items-center mb-4">
                 <Shield className="w-8 h-8 text-blue-600 mr-3" />
                 <h3 className="text-lg font-semibold text-gray-900">Key Management</h3>
@@ -182,49 +212,64 @@ console.log(data.reply);`}</code>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-emerald-50">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <Rocket className="w-8 h-8 text-emerald-600" />
+            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-3xl p-1 hover:shadow-2xl hover:shadow-emerald-500/20 transform hover:-translate-y-2 transition-all duration-300">
+              <div className="bg-white rounded-2xl p-8 text-center">
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <Rocket className="w-8 h-8 text-emerald-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Starter</h3>
+                <p className="text-gray-600 mb-4">Perfect for small projects and testing</p>
+                <ul className="text-left text-gray-600 space-y-2 mb-6">
+                  <li>• 500 requests per month</li>
+                  <li>• Basic support</li>
+                  <li>• Standard features</li>
+                </ul>
+                <div className="bg-emerald-50 rounded-xl p-4">
+                  <div className="text-3xl font-bold text-emerald-700">Rs. 3,000</div>
+                  <div className="text-sm text-emerald-600">/month</div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Starter</h3>
-              <p className="text-gray-600 mb-4">Perfect for small projects and testing</p>
-              <ul className="text-left text-gray-600 space-y-2 mb-6">
-                <li>• 500 requests per month</li>
-                <li>• Basic support</li>
-                <li>• Standard features</li>
-              </ul>
-              <div className="text-3xl font-bold text-gray-900">Rs. 3,000/month</div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-blue-50 relative">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-1 hover:shadow-2xl hover:shadow-blue-500/20 transform hover:-translate-y-2 transition-all duration-300 relative">
               <div className="absolute -top-3 -right-3 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full">
                 Popular
               </div>
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <Zap className="w-8 h-8 text-blue-600" />
+              <div className="bg-white rounded-2xl p-8 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <Zap className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Pro</h3>
+                <p className="text-gray-600 mb-4">For growing businesses and startups</p>
+                <ul className="text-left text-gray-600 space-y-2 mb-6">
+                  <li>• 1,500 requests per month</li>
+                  <li>• Priority support</li>
+                  <li>• Advanced features</li>
+                </ul>
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <div className="text-3xl font-bold text-blue-700">Rs. 5,000</div>
+                  <div className="text-sm text-blue-600">/month</div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Pro</h3>
-              <p className="text-gray-600 mb-4">For growing businesses and startups</p>
-              <ul className="text-left text-gray-600 space-y-2 mb-6">
-                <li>• 1,500 requests per month</li>
-                <li>• Priority support</li>
-                <li>• Advanced features</li>
-              </ul>
-              <div className="text-3xl font-bold text-gray-900">Rs. 5,000/month</div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl shadow-gray-900/10 border border-gray-100 p-8 text-center hover:shadow-2xl hover:shadow-gray-900/20 transform hover:-translate-y-2 transition-all duration-300 hover:bg-gradient-to-br hover:from-white hover:to-purple-50">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <Crown className="w-8 h-8 text-purple-600" />
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-3xl p-1 hover:shadow-2xl hover:shadow-purple-500/20 transform hover:-translate-y-2 transition-all duration-300">
+              <div className="bg-white rounded-2xl p-8 text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <Crown className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Enterprise</h3>
+                <p className="text-gray-600 mb-4">For large organizations with high volume</p>
+                <ul className="text-left text-gray-600 space-y-2 mb-6">
+                  <li>• Unlimited requests</li>
+                  <li>• Dedicated support</li>
+                  <li>• Custom features</li>
+                </ul>
+                <div className="bg-purple-50 rounded-xl p-4">
+                  <div className="text-3xl font-bold text-purple-700">Rs. 15,000</div>
+                  <div className="text-sm text-purple-600">/month</div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Enterprise</h3>
-              <p className="text-gray-600 mb-4">For large organizations with high volume</p>
-              <ul className="text-left text-gray-600 space-y-2 mb-6">
-                <li>• Unlimited requests</li>
-                <li>• Dedicated support</li>
-                <li>• Custom features</li>
-              </ul>
-              <div className="text-3xl font-bold text-gray-900">Rs. 15,000/month</div>
             </div>
           </div>
         </div>
