@@ -1,12 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Copy, Check, Power, PowerOff, LogOut, Key, Shield, Activity } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Developer() {
   const [apiKey, setApiKey] = useState("pk_1234567890abcdef1234567890abcdef");
   const [isKeyVisible, setIsKeyVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isActive, setIsActive] = useState(true);
+  const [responseTime, setResponseTime] = useState(120);
+
+  // Dynamic response time that changes every 5 seconds
+  useEffect(() => {
+    const responseTimes = [116, 119, 120, 122, 125];
+    let index = 2; // Start with 120ms
+    
+    const interval = setInterval(() => {
+      index = (index + 1) % responseTimes.length;
+      setResponseTime(responseTimes[index]);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleCopyKey = () => {
     navigator.clipboard.writeText(apiKey);
@@ -89,7 +103,7 @@ export default function Developer() {
                 </div>
               </div>
               <div className="flex items-center justify-end text-sm text-gray-600">
-                <span>Response time: 120ms</span>
+                <span>Response time: {responseTime}ms</span>
               </div>
             </div>
           </div>
