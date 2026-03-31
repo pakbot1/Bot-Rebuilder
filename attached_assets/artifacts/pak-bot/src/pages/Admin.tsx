@@ -74,6 +74,15 @@ export default function Admin() {
       [newKey]: { active: true, user: developerName }
     }));
     
+    // Save to localStorage for Developer section
+    try {
+      const existingKeys = JSON.parse(localStorage.getItem('adminGeneratedKeys') || '[]');
+      const updatedKeys = [newKey, ...existingKeys].slice(0, 10); // Keep last 10 keys
+      localStorage.setItem('adminGeneratedKeys', JSON.stringify(updatedKeys));
+    } catch (error) {
+      console.error('Failed to save key to localStorage:', error);
+    }
+    
     // Reset form
     setDeveloperName("");
     setDeveloperEmail("");

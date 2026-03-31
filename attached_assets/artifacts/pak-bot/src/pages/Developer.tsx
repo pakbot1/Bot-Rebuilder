@@ -21,6 +21,19 @@ export default function Developer() {
     "pk_abcd1234567890efghijklmnop123456"
   ];
 
+  // Get keys generated from Admin (stored in localStorage)
+  const getAdminGeneratedKeys = () => {
+    try {
+      const storedKeys = localStorage.getItem('adminGeneratedKeys');
+      return storedKeys ? JSON.parse(storedKeys) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Combine hardcoded keys with admin-generated keys
+  const allValidKeys = [...validApiKeys, ...getAdminGeneratedKeys()];
+
   // Dynamic response time that changes every 2.5 seconds
   useEffect(() => {
     const responseTimes = [116, 119, 120, 122, 125];
@@ -50,7 +63,7 @@ export default function Developer() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validApiKeys.includes(password)) {
+    if (allValidKeys.includes(password)) {
       setIsAuthenticated(true);
       setLoginError(false);
       // Set the API key to the one that was used for login
