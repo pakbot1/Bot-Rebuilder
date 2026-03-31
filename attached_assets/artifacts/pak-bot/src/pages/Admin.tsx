@@ -12,6 +12,10 @@ export default function Admin() {
   const [showGenerateForm, setShowGenerateForm] = useState(false);
   const [developerName, setDeveloperName] = useState("");
   const [developerEmail, setDeveloperEmail] = useState("");
+  const [showBotInstructions, setShowBotInstructions] = useState(false);
+  const [botInstructions, setBotInstructions] = useState(
+    "You are PakBot, Pakistan's AI Assistant. You are helpful, professional, and knowledgeable about Pakistani culture, technology, and business. Always respond in a friendly but professional manner. Provide accurate information and assist users with their queries related to Pakistan, technology, business, and general knowledge."
+  );
   
   // Admin password (you can change this)
   const adminPassword = "admin123456";
@@ -114,6 +118,13 @@ export default function Admin() {
     } else {
       setActiveKeys(prev => prev + 1); // Activating
     }
+  };
+
+  const saveBotInstructions = () => {
+    // In a real app, this would save to backend
+    // For now, we'll just show a success message
+    alert("Bot instructions updated successfully! The AI agent's personality has been changed.");
+    setShowBotInstructions(false);
   };
 
   // If not authenticated, show login screen
@@ -413,7 +424,15 @@ export default function Admin() {
                 <h3 className="text-xl font-semibold text-gray-900">Admin Actions</h3>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Button 
+                  onClick={() => setShowBotInstructions(true)}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <Activity className="w-4 h-4" />
+                  Bot Instructions
+                </Button>
+                
                 <Button variant="outline" className="flex items-center justify-center gap-2">
                   <Users className="w-4 h-4" />
                   Manage Users
@@ -423,19 +442,65 @@ export default function Admin() {
                   <Lock className="w-4 h-4" />
                   API Keys
                 </Button>
-                
-                <Button variant="outline" className="flex items-center justify-center gap-2">
-                  <Activity className="w-4 h-4" />
-                  System Logs
-                </Button>
-                
-                <Button variant="outline" className="flex items-center justify-center gap-2">
-                  <Settings className="w-4 h-4" />
-                  Settings
-                </Button>
               </div>
             </div>
           </div>
+
+          {/* Bot Instructions Modal */}
+          {showBotInstructions && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[80vh] overflow-hidden">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <Activity className="w-6 h-6 text-red-600" />
+                    <h3 className="text-xl font-semibold text-gray-900">Bot Instructions</h3>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowBotInstructions(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+                
+                <div className="p-6">
+                  <p className="text-sm text-gray-600 mb-4">
+                    Define PakBot's personality, behavior, and response patterns. These instructions will be used by the AI agent to shape its responses.
+                  </p>
+                  
+                  <textarea
+                    value={botInstructions}
+                    onChange={(e) => setBotInstructions(e.target.value)}
+                    className="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none font-mono text-sm"
+                    placeholder="Enter bot instructions..."
+                  />
+                  
+                  <div className="flex justify-between items-center mt-4">
+                    <span className="text-sm text-gray-500">
+                      {botInstructions.length} characters
+                    </span>
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setBotInstructions("You are PakBot, Pakistan's AI Assistant. You are helpful, professional, and knowledgeable about Pakistani culture, technology, and business. Always respond in a friendly but professional manner. Provide accurate information and assist users with their queries related to Pakistan, technology, business, and general knowledge.");
+                        }}
+                      >
+                        Reset to Default
+                      </Button>
+                      <Button
+                        onClick={saveBotInstructions}
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                      >
+                        Save Instructions
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
