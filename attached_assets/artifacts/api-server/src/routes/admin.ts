@@ -111,6 +111,9 @@ router.post("/admin/keys", async (req, res) => {
 });
 
 router.patch("/admin/keys/:id", async (req, res) => {
+  console.log("PATCH request received, id:", req.params.id);
+  console.log("Request body:", req.body);
+  
   if (!requireAdmin(req, res)) return;
   const { isActive } = req.body;
   if (typeof isActive !== "boolean") {
@@ -119,6 +122,7 @@ router.patch("/admin/keys/:id", async (req, res) => {
   }
   await db.update(apiKeysTable).set({ isActive }).where(eq(apiKeysTable.id, req.params.id));
   const updated = await db.select().from(apiKeysTable).where(eq(apiKeysTable.id, req.params.id)).limit(1);
+  console.log("Database update successful for id:", req.params.id, "new isActive:", updated[0]?.isActive);
   if (updated.length === 0) {
     res.status(404).json({ error: "Key not found." });
     return;
@@ -136,10 +140,14 @@ router.patch("/admin/keys/:id", async (req, res) => {
 });
 
 router.delete("/admin/keys/:id", async (req, res) => {
+  console.log("DELETE request received, id:", req.params.id);
+  console.log("Admin key received:", req.headers['x-admin-key']);
+  
   if (!requireAdmin(req, res)) return;
   
   try {
     await db.delete(apiKeysTable).where(eq(apiKeysTable.id, req.params.id));
+    console.log("Database delete successful for id:", req.params.id);
     res.json({ success: true, message: "Key deleted" });
   } catch (error) {
     console.error("Failed to delete API key:", error);

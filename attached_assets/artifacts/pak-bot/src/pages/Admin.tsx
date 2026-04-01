@@ -150,6 +150,7 @@ export default function Admin() {
   };
 
   const deleteKey = async (key: string, index: number) => {
+    console.log("Deleting key:", key);
     try {
       // Send DELETE request to backend to remove key from Supabase
       const response = await fetch(`/api/admin/keys/${key}`, {
@@ -158,6 +159,8 @@ export default function Admin() {
           'X-Admin-Key': 'pakbot-admin-2024'
         }
       });
+
+      console.log("Delete response status:", response.status);
 
       if (!response.ok) {
         throw new Error('Failed to delete API key');
@@ -185,6 +188,7 @@ export default function Admin() {
   };
 
   const toggleKeyStatus = async (key: string) => {
+    console.log("Toggling key:", key);
     try {
       // Get current status
       const currentStatus = keyStatuses[key]?.active;
@@ -200,6 +204,8 @@ export default function Admin() {
           isActive: !currentStatus
         })
       });
+
+      console.log("Toggle response status:", response.status);
 
       if (!response.ok) {
         throw new Error('Failed to update API key status');
