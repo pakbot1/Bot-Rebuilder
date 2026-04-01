@@ -137,8 +137,14 @@ router.patch("/admin/keys/:id", async (req, res) => {
 
 router.delete("/admin/keys/:id", async (req, res) => {
   if (!requireAdmin(req, res)) return;
-  await db.delete(apiKeysTable).where(eq(apiKeysTable.id, req.params.id));
-  res.json({ success: true });
+  
+  try {
+    await db.delete(apiKeysTable).where(eq(apiKeysTable.id, req.params.id));
+    res.json({ success: true, message: "Key deleted" });
+  } catch (error) {
+    console.error("Failed to delete API key:", error);
+    res.status(500).json({ error: "Failed to delete API key." });
+  }
 });
 
 router.get("/admin/instructions", async (req, res) => {
