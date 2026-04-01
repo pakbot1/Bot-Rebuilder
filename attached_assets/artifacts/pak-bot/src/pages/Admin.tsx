@@ -7,11 +7,50 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState(false);
+
+  // Real data management
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [activeKeys, setActiveKeys] = useState(0);
+  const [totalRequests, setTotalRequests] = useState(15432);
+  const [keyStatuses, setKeyStatuses] = useState<{[key: string]: {active: boolean, user: string}}>({});
   const [generatedKeys, setGeneratedKeys] = useState<string[]>([]);
   const [copiedKey, setCopiedKey] = useState<number | null>(null);
   const [showGenerateForm, setShowGenerateForm] = useState(false);
   const [developerName, setDeveloperName] = useState("");
   const [developerEmail, setDeveloperEmail] = useState("");
+
+  // Fetch API keys from Supabase on component mount
+  useEffect(() => {
+    const fetchKeys = async () => {
+      try {
+        const response = await fetch('/api/admin/keys', {
+          method: 'GET',
+          headers: {
+            'X-Admin-Key': 'pakbot-admin-2024'
+          }
+        });
+
+        if (response.ok) {
+          const keys = await response.json();
+          setGeneratedKeys(keys.map((k: any) => k.key));
+          setTotalUsers(keys.length);
+          setActiveKeys(keys.filter((k: any) => k.isActive).length);
+          
+          // Set key statuses
+          const statuses: {[key: string]: {active: boolean, user: string}} = {};
+          keys.forEach((k: any) => {
+            statuses[k.key] = { active: k.isActive, user: k.name };
+          });
+          setKeyStatuses(statuses);
+        }
+      } catch (error) {
+        console.error('Failed to fetch API keys:', error);
+      }
+    };
+
+    fetchKeys();
+  }, []); // Empty dependency array means this runs once on mount
+
   const [showBotInstructions, setShowBotInstructions] = useState(false);
   const [botInstructions, setBotInstructions] = useState(
     "You are PakBot, Pakistan's AI Assistant. You are helpful, professional, and knowledgeable about Pakistani culture, technology, and business. Always respond in a friendly but professional manner. Provide accurate information and assist users with their queries related to Pakistan, technology, business, and general knowledge."
@@ -20,12 +59,6 @@ export default function Admin() {
   // Admin password (you can change this)
   const adminPassword = "admin-pakbot-24";
   
-  // Real data management
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [activeKeys, setActiveKeys] = useState(0);
-  const [totalRequests, setTotalRequests] = useState(15432);
-  const [keyStatuses, setKeyStatuses] = useState<{[key: string]: {active: boolean, user: string}}>({});
-
   // Simulate API calls (requests update)
   useEffect(() => {
     const interval = setInterval(() => {
