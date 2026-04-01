@@ -120,9 +120,9 @@ router.patch("/admin/keys/:id", async (req, res) => {
     res.status(400).json({ error: "isActive must be a boolean." });
     return;
   }
-  await db.update(apiKeysTable).set({ isActive }).where(eq(apiKeysTable.id, req.params.id));
-  const updated = await db.select().from(apiKeysTable).where(eq(apiKeysTable.id, req.params.id)).limit(1);
-  console.log("Database update successful for id:", req.params.id, "new isActive:", updated[0]?.isActive);
+  await db.update(apiKeysTable).set({ isActive }).where(eq(apiKeysTable.key, req.params.id));
+  const updated = await db.select().from(apiKeysTable).where(eq(apiKeysTable.key, req.params.id)).limit(1);
+  console.log("Database update successful for key:", req.params.id, "new isActive:", updated[0]?.isActive);
   if (updated.length === 0) {
     res.status(404).json({ error: "Key not found." });
     return;
@@ -146,8 +146,8 @@ router.delete("/admin/keys/:id", async (req, res) => {
   if (!requireAdmin(req, res)) return;
   
   try {
-    await db.delete(apiKeysTable).where(eq(apiKeysTable.id, req.params.id));
-    console.log("Database delete successful for id:", req.params.id);
+    await db.delete(apiKeysTable).where(eq(apiKeysTable.key, req.params.id));
+    console.log("Database delete successful for key:", req.params.id);
     res.json({ success: true, message: "Key deleted" });
   } catch (error) {
     console.error("Failed to delete API key:", error);
