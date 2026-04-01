@@ -149,37 +149,77 @@ export default function Admin() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const deleteKey = (key: string, index: number) => {
-    // Remove from generated keys
-    setGeneratedKeys(prev => prev.filter((_, i) => i !== index));
-    
-    // Update total users (decrease)
-    setTotalUsers(prev => prev - 1);
-    
-    // Update active keys if key was active
-    if (keyStatuses[key]?.active) {
-      setActiveKeys(prev => prev - 1);
+  const deleteKey = async (key: string, index: number) => {
+    try {
+      // Send DELETE request to backend to remove key from Supabase
+      const response = await fetch(`/api/admin/keys/${key}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Admin-Key': 'pakbot-admin-2024'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete API key');
+      }
+
+      // Remove from local state
+      setGeneratedKeys(prev => prev.filter((_, i) => i !== index));
+      setTotalUsers(prev => prev - 1);
+      
+      // Update active keys if key was active
+      if (keyStatuses[key]?.active) {
+        setActiveKeys(prev => prev - 1);
+      }
+      
+      // Remove from key statuses
+      setKeyStatuses(prev => {
+        const newStatuses = {...prev};
+        delete newStatuses[key];
+        return newStatuses;
+      });
+      
+    } catch (error) {
+      console.error('Failed to delete API key:', error);
     }
-    
-    // Remove from key statuses
-    setKeyStatuses(prev => {
-      const newStatuses = {...prev};
-      delete newStatuses[key];
-      return newStatuses;
-    });
   };
 
-  const toggleKeyStatus = (key: string) => {
-    setKeyStatuses(prev => ({
-      ...prev,
-      [key]: { ...prev[key], active: !prev[key].active }
-    }));
-    
-    // Update active keys count
-    if (keyStatuses[key]?.active) {
-      setActiveKeys(prev => prev - 1); // Deactivating
-    } else {
-      setActiveKeys(prev => prev + 1); // Activating
+  const toggleKeyStatus = async (key: string) => {
+    try {
+      // Get current status
+      const currentStatus = keyStatuses[key]?.active;
+      
+      // Send PATCH request to backend to update key status in Supabase
+      const response = await fetch(`/api/admin/keys/${key}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Key': 'pakbot-admin-2024'
+        },
+        body: JSON.stringify({
+          isActive: !currentStatus
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update API key status');
+      }
+
+      // Update local state
+      setKeyStatuses(prev => ({
+        ...prev,
+        [key]: { ...prev[key], active: !currentStatus }
+      }));
+      
+      // Update active keys count
+      if (currentStatus) {
+        setActiveKeys(prev => prev - 1); // Deactivating
+      } else {
+        setActiveKeys(prev => prev + 1); // Activating
+      }
+      
+    } catch (error) {
+      console.error('Failed to toggle API key status:', error);
     }
   };
 
