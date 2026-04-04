@@ -857,7 +857,7 @@ async function buildMessages(
   }
 
   const userText = message + urlContext;
-  const model = "llama-3.3-70b-versatile";
+  const model = "llama-3.1-8b-instant";
 
   let userContent: any;
   if (imageBase64) {
