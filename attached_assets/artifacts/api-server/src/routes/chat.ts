@@ -339,10 +339,11 @@ router.post("/chat/stream", async (req, res) => {
   const maxAttempts = groqKeys.length * MODELS.length;
   while (attempts < maxAttempts) {
     try {
+      const modelName = getCurrentModel();
       completion = await getGroqClient().chat.completions.create({
-  model: getCurrentModel(),
-  messages,
-  reasoning_effort: "none",
+        model: modelName,
+        messages,
+        ...(modelName.includes("qwen") ? { reasoning_effort: "none" } : {}),
         stream: true,
       });
       break;
