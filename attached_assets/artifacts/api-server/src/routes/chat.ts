@@ -18,14 +18,30 @@ const groqKeys = [
 ].filter(Boolean) as string[];
 
 let currentKeyIndex = 0;
+let currentModelIndex = 0;
+
+const MODELS = [
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant",
+];
 
 function getGroqClient(): Groq {
   return new Groq({ apiKey: groqKeys[currentKeyIndex] });
 }
 
-function rotateKey() {
-  currentKeyIndex = (currentKeyIndex + 1) % groqKeys.length;
-  logger.info({ newIndex: currentKeyIndex }, "Groq key rotated");
+function getCurrentModel(): string {
+  return MODELS[currentModelIndex];
+}
+
+function rotateModelOrKey() {
+  if (currentModelIndex === 0) {
+    currentModelIndex = 1;
+    logger.info({ key: currentKeyIndex, model: MODELS[1] }, "Model rotated to 8b");
+  } else {
+    currentModelIndex = 0;
+    currentKeyIndex = (currentKeyIndex + 1) % groqKeys.length;
+    logger.info({ newKeyIndex: currentKeyIndex, model: MODELS[0] }, "Key rotated, back to 70b");
+  }
 }
 
 const sessions = new Map<
@@ -337,7 +353,7 @@ async function buildMessages(
   }
 
   const userText = message + urlContext;
-  const model = "llama-3.1-8b-instant";
+  const model = getCurrentModel();
 
   let userContent: any;
   if (imageBase64) {
@@ -394,14 +410,15 @@ router.post("/chat", async (req, res) => {
   // ✅ ROTATION LOGIC
   let completion: any;
   let attempts = 0;
-  while (attempts < groqKeys.length) {
+  const maxAttempts = groqKeys.length * MODELS.length;
+  while (attempts < maxAttempts) {
     try {
-      completion = await getGroqClient().chat.completions.create({ model, messages });
+      completion = await getGroqClient().chat.completions.create({ model: getCurrentModel(), messages });
       break;
     } catch (err: any) {
-      if (err?.status === 429) {
-        logger.warn({ attempt: attempts + 1 }, "429 hit — rotating Groq key");
-        rotateKey();
+      if (err?.status === 429 || err?.status === 413) {
+        logger.warn({ attempt: attempts + 1, model: getCurrentModel() }, "Rate limit hit — rotating");
+        rotateModelOrKey();
         attempts++;
       } else {
         throw err;
@@ -453,18 +470,19 @@ router.post("/chat/stream", async (req, res) => {
   // ✅ ROTATION LOGIC
   let completion: any;
   let attempts = 0;
-  while (attempts < groqKeys.length) {
+  const maxAttempts = groqKeys.length * MODELS.length;
+  while (attempts < maxAttempts) {
     try {
       completion = await getGroqClient().chat.completions.create({
-        model,
+        model: getCurrentModel(),
         messages,
         stream: true,
       });
       break;
     } catch (err: any) {
-      if (err?.status === 429) {
-        logger.warn({ attempt: attempts + 1 }, "429 hit — rotating Groq key");
-        rotateKey();
+      if (err?.status === 429 || err?.status === 413) {
+        logger.warn({ attempt: attempts + 1, model: getCurrentModel() }, "Rate limit hit — rotating");
+        rotateModelOrKey();
         attempts++;
       } else {
         throw err;
