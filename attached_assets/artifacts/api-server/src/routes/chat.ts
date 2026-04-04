@@ -277,7 +277,7 @@ router.post("/chat", async (req, res) => {
   const maxAttempts = groqKeys.length * MODELS.length;
   while (attempts < maxAttempts) {
     try {
-      completion = await getGroqClient().chat.completions.create({ model: getCurrentModel(), messages });
+      completion = await getGroqClient().chat.completions.create({ model: getCurrentModel(), messages, reasoning_effort: "none" });
       break;
     } catch (err: any) {
       if (err?.status === 429 || err?.status === 413) {
@@ -295,7 +295,8 @@ router.post("/chat", async (req, res) => {
     return;
   }
 
-  const reply = completion.choices[0]?.message?.content ?? "Kuch masla ho gaya, dobara try karo.";
+  const rawReply = completion.choices[0]?.message?.content ?? "Kuch masla ho gaya, dobara try karo.";
+const reply = rawReply.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
 
   history.push({ role: "user", content: message });
   history.push({ role: "assistant", content: reply });
@@ -339,8 +340,9 @@ router.post("/chat/stream", async (req, res) => {
   while (attempts < maxAttempts) {
     try {
       completion = await getGroqClient().chat.completions.create({
-        model: getCurrentModel(),
-        messages,
+  model: getCurrentModel(),
+  messages,
+  reasoning_effort: "none",
         stream: true,
       });
       break;
@@ -362,13 +364,27 @@ router.post("/chat/stream", async (req, res) => {
   }
 
   let fullReply = "";
-  for await (const chunk of completion) {
-    const text = chunk.choices[0]?.delta?.content ?? "";
-    if (text) {
-      fullReply += text;
-      res.write(text);
-    }
+let buffer = "";
+let inThinkTag = false;
+
+for await (const chunk of completion) {
+  const text = chunk.choices[0]?.delta?.content ?? "";
+  if (!text) continue;
+
+  buffer += text;
+
+  if (buffer.includes("<think>")) inThinkTag = true;
+  if (buffer.includes("</think>")) {
+    inThinkTag = false;
+    buffer = buffer.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
   }
+
+  if (!inThinkTag && buffer) {
+    fullReply += buffer;
+    res.write(buffer);
+    buffer = "";
+  }
+}
   res.end();
 
   history.push({ role: "user", content: message });
