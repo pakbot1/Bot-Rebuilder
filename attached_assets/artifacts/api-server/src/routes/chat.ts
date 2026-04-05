@@ -289,7 +289,11 @@ router.post("/chat", async (req, res) => {
   const maxAttempts = groqKeys.length * MODELS.length;
   while (attempts < maxAttempts) {
     try {
-      completion = await getGroqClient().chat.completions.create({ model: getCurrentModel(), messages, reasoning_effort: "none" });
+      completion = await getGroqClient().chat.completions.create({ 
+  model: model, 
+  messages, 
+  ...(model.includes("qwen") ? { reasoning_effort: "none" } : {}),
+});
       break;
     } catch (err: any) {
       if (err?.status === 429 || err?.status === 413) {
@@ -350,11 +354,10 @@ router.post("/chat/stream", async (req, res) => {
   const maxAttempts = groqKeys.length * MODELS.length;
   while (attempts < maxAttempts) {
     try {
-      const modelName = getCurrentModel();
       completion = await getGroqClient().chat.completions.create({
-        model: modelName,
+        model: model,
         messages,
-        ...(modelName.includes("qwen") ? { reasoning_effort: "none" } : {}),
+        ...(model.includes("qwen") ? { reasoning_effort: "none" } : {}),
         stream: true,
       });
       break;
