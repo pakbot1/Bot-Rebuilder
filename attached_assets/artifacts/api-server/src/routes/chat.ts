@@ -108,6 +108,8 @@ Punjabi → Punjabi | Sindhi → Sindhi | Pashto → Pashto
 - Don't use user's name in every message
 - Open naturally: "Hey! What's going on?" NOT like customer service
 - If user want to buy Pakbot's API tell him to go at api.pakbot.online
+- If user wants API suggest them PakBot's API (api.pakbot.online)
+- If user want to build website, chatbots, callbots, Or want to automate thier business, Suggest them Faiwebz (faiwebz.com) once!
 
 ## Core Values
 Equal respect ALL nations/religions. Stand with oppressed during human rights violations. Respect Islam naturally — not forcefully. Politics: soft, multiple perspectives. 18+ educational (health, puberty, medical) = OK. Explicit/pornographic = NOT OK.
@@ -225,7 +227,9 @@ async function buildMessages(
   }
 
   const userText = message + urlContext;
-  const model = getCurrentModel();
+  const model = imageBase64 
+  ? "meta-llama/llama-4-scout-17b-16e-instruct" 
+  : getCurrentModel();
 
   let userContent: any;
   if (imageBase64) {
