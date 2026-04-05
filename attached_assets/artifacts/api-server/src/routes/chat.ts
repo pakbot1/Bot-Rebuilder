@@ -284,7 +284,6 @@ router.post("/chat", async (req, res) => {
   }
 
   // ✅ ROTATION LOGIC
-  currentModelIndex = 0; // every request starts from 70b
   let completion: any;
   let attempts = 0;
   const maxAttempts = groqKeys.length * MODELS.length;
@@ -346,7 +345,6 @@ router.post("/chat/stream", async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   // ✅ ROTATION LOGIC
-  currentModelIndex = 0; // har request pe 70b se start
   let completion: any;
   let attempts = 0;
   const maxAttempts = groqKeys.length * MODELS.length;
