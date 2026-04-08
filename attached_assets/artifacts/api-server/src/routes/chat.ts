@@ -418,4 +418,45 @@ for await (const chunk of completion) {
     .where(eq(apiKeysTable.key, keyRecord.key));
 });
 
+// ✅ POST /api/generate-image — Cloudflare Workers AI
+router.post("/generate-image", async (req, res) => {
+  const keyRecord = await authenticateKey(req, res);
+  if (!keyRecord) return;
+
+  const { prompt } = req.body;
+  if (!prompt) {
+    res.status(400).json({ error: "Prompt required." });
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt, num_steps: 4 })
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.text();
+      logger.error({ err }, "Cloudflare image generation failed");
+      res.status(500).json({ error: "Image generation failed." });
+      return;
+    }
+
+    const buffer = await response.arrayBuffer();
+    res.set("Content-Type", "image/jpeg");
+    res.send(Buffer.from(buffer));
+
+  } catch (err) {
+    logger.error({ err }, "Image generation error");
+    res.status(500).json({ error: "Image generation failed." });
+  }
+});
+
 export default router;
