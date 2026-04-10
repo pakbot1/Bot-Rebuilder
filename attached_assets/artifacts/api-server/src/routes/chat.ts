@@ -388,15 +388,7 @@ router.post("/chat/stream", async (req, res) => {
   let fullReply = "";
 let buffer = "";
 let inThinkTag = false;
-let aborted = false;
-
-req.on("close", () => {
-  aborted = true;
-  res.end();
-});
-
 for await (const chunk of completion) {
-  if (aborted) break;
   const text = chunk.choices[0]?.delta?.content ?? "";
   if (!text) continue;
 
